@@ -1,0 +1,16 @@
+
+chache = {
+    "comp_uid: {
+        "participants": {
+            "nickname: {
+                "did_solve": Boolean,
+                "time_took": time.time(),
+            }...
+        },
+        "results": []
+        "difficulty": CHOISES(easy, medium, hard),
+        "duration": time.time(),
+        "capacity":  INT,
+        "created_at": time.time(),
+    }..
+}
