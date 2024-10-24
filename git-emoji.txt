@@ -1,0 +1,8 @@
+⚡️: Improve performance.
+🐛: Fix a bug.
+🔥: Remove code or files.
+✨: Introduce new features.
+🚀: Deploy stuff.
+✅: Add, update, or pass tests.
+🚨: Fix compiler / linter warnings.
+♻️: Refactor code.
