@@ -60,6 +60,9 @@ class JoinCompetitionView(APIView):
         participant_id = len(competition_data["participants"]) + 1 
         competition_data["participants"][nickname] = {
             "id": participant_id,
+            'did_solve': False,
+            #Future features
+            'time_took': 0,
             "score": 0,
             "responses": []
         }
