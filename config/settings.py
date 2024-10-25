@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'django-redis',
-    'apps.competition',
+    'django_redis',
     'redis',
     'corsheaders',
     'ckeditor',
