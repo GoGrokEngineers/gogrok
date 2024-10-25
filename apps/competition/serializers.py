@@ -5,22 +5,12 @@ import string
 from apps.task.serializers import TaskSerializer
 
 
-class CompetitionSerializer(serializers.ModelSerializer):
-    class Meta:
-        task = TaskSerializer(read_only=True)
-        model = Competition
-        fields = [
-            'participants',
-            'difficulty',
-            'created_at',
-            'six_digit_link',
-            'is_active',
-            'duration_minutes',
-        ]
+DIFFICULTY_CHOICES = {"Easy": "Easy", "Medium": "Medium", "Hard": "Hard"}
+DURATION_CHOICES = {30: 30, 40: 40, 60: 60, 90: 90} 
 
-    def create(self, validated_data):
-        return Competition.objects.create(**validated_data)    
-
+class CompetionValidateSerializer(serializers.Serializer):
+    difficulty = serializers.ChoiceField(choices=DIFFICULTY_CHOICES)
+    
 
 class CompetionJoinSerializer(serializers.Serializer):
     comp_uid = serializers.CharField(max_length=50)
