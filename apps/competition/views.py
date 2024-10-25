@@ -101,5 +101,4 @@ class JoinCompetitionView(APIView):
             "nickname": nickname,
             "participant_id": participant_id,
             "message": "Successfully joined the competition."
-        }, status=status.HTTP_200_OK)     
-        
+        }, status=status.HTTP_200_OK)        

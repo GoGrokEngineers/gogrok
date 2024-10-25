@@ -13,9 +13,6 @@ class CompetitionValidateSerializer(serializers.Serializer):
     participants = serializers.DictField()
     results = serializers.ListField(read_only=True)
 
-
-    
-
 class CompetionJoinSerializer(serializers.Serializer):
     comp_uid = serializers.CharField(max_length=50)
     nickname = serializers.CharField(max_length=25)
