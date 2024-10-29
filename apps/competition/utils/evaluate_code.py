@@ -1,9 +1,11 @@
 import subprocess
 from apps.test_case.models import TestCase
+import os
 
 def delete_file(file_path):
-    pass
-    #loading
+    file_path = "path/to/your/file.txt"
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
 
 def format_cases(task):
@@ -38,5 +40,5 @@ def evaluate_code(code: str, task, competion_uid, nick_name):
         else:
             results.append({"test_case": i + 1, "result": "error", "error": result.stderr})
 
+    delete_file(file_name)
     return results
-    #loading
