@@ -9,100 +9,104 @@ class Command(BaseCommand):
 
         test_cases = [
     {
-        "input": {"nums": [2, 7, 11, 15], "target": 9},
-        "output": [0, 1],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [3, 2, 4], "target": 6},
-        "output": [1, 2],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [3, 3], "target": 6},
-        "output": [0, 1],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [1, 5, 3, 7, 2, 8], "target": 10},
-        "output": [3, 5],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [0, 4, 3, 0], "target": 0},
-        "output": [0, 3],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [-1, -2, -3, -4, -5], "target": -8},
-        "output": [2, 4],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [1, 2, 3, 4, 5], "target": 6},
-        "output": [0, 4],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [100000, 99999, -1, 1], "target": 99998},
-        "output": [1, 2],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [10, 15, -15, -10, 0], "target": 0},
-        "output": [0, 3],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [8, 2, 6, 4, 7, 3], "target": 9},
-        "output": [1, 5],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [-10, 7, 19, 21, 5, -7], "target": 12},
-        "output": [1, 2],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [1, 1, 1, 2, 2, 3], "target": 4},
-        "output": [3, 5],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [2, 4, 6, 8, 10, 12], "target": 16},
-        "output": [3, 4],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [3, 5, -4, 8, 11, 1, -1, 6], "target": 10},
-        "output": [1, 6],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    },
-    {
-        "input": {"nums": [4, 5, 1, -3, -5, 9, 7, 2], "target": 0},
-        "output": [1, 4],
-        "input_type": {"nums": "list", "target": "int"},
-        "output_type": {"result": "list"}
-    }
+    "input": { "nums1": [1, 2, 3, 0, 0, 0], "m": 3, "nums2": [2, 5, 6], "n": 3 },
+    "output": [1, 2, 2, 3, 5, 6],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [1], "m": 1, "nums2": [], "n": 0 },
+    "output": [1],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [0], "m": 0, "nums2": [1], "n": 1 },
+    "output": [1],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [2, 0], "m": 1, "nums2": [1], "n": 1 },
+    "output": [1, 2],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [4, 5, 6, 0, 0, 0], "m": 3, "nums2": [1, 2, 3], "n": 3 },
+    "output": [1, 2, 3, 4, 5, 6],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [1, 3, 5, 0, 0, 0], "m": 3, "nums2": [2, 4, 6], "n": 3 },
+    "output": [1, 2, 3, 4, 5, 6],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [0, 0, 0, 0, 0], "m": 0, "nums2": [1, 2, 3, 4, 5], "n": 5 },
+    "output": [1, 2, 3, 4, 5],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [1, 2, 0, 0], "m": 2, "nums2": [3, 4], "n": 2 },
+    "output": [1, 2, 3, 4],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [0, 0, 0, 0, 0], "m": 0, "nums2": [0, 0, 0, 0, 0], "n": 5 },
+    "output": [0, 0, 0, 0, 0],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [1, 2, 3, 0, 0, 0], "m": 3, "nums2": [-1, -2, -3], "n": 3 },
+    "output": [-3, -2, -1, 1, 2, 3],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [-5, -4, 0, 0, 0, 0], "m": 2, "nums2": [-3, -2, -1, 0], "n": 4 },
+    "output": [-5, -4, -3, -2, -1, 0],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [4, 0, 0, 0, 0, 0], "m": 1, "nums2": [1, 2, 3, 5, 6], "n": 5 },
+    "output": [1, 2, 3, 4, 5, 6],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [3, 0, 0, 0], "m": 1, "nums2": [1, 2, 4], "n": 3 },
+    "output": [1, 2, 3, 4],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [2, 4, 6, 0, 0, 0], "m": 3, "nums2": [1, 3, 5], "n": 3 },
+    "output": [1, 2, 3, 4, 5, 6],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+},
+{
+    "input": { "nums1": [1, 3, 5, 7, 0, 0, 0], "m": 4, "nums2": [2, 4, 6], "n": 3 },
+    "output": [1, 2, 3, 4, 5, 6, 7],
+    "input_type": { "nums1": "List[int]", "m": "int", "nums2": "List[int]", "n": "int" },
+    "output_type": { "result": "List[int]" }
+}
+
+
+
+
 
 ]
         
 
-        task = Task.objects.get(title="Two Sum")
+        task = Task.objects.get(title="Merge Sorted Array")
 
         for test_case_data in test_cases:
             TestCase.objects.get_or_create(
