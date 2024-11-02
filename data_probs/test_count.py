@@ -1,4 +1,9 @@
-# from apps.test_case.models import TestCase
+# In order to know count of the testcases of each task
+
+
+
+
+
 import os
 import django
 
@@ -12,7 +17,7 @@ from apps.task.models import Task
 tasks = Task.objects.all()
 
 for task in tasks:
-    testcase_count = task.task_cases.count()
+    testcase_count = task.test_cases.count()
     if testcase_count == 15:
         print(f'Task ID {task.id} has exactly 15 test cases.')
     else:
