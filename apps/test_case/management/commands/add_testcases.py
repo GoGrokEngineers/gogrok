@@ -9,94 +9,94 @@ class Command(BaseCommand):
 
         test_cases = [
     {
-        "input": { "board": [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], "word": "ABCCED" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [2, 7, 11, 15], "target": 9},
+        "output": [0, 1],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], "word": "SEE" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [3, 2, 4], "target": 6},
+        "output": [1, 2],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], "word": "ABCB" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [3, 3], "target": 6},
+        "output": [0, 1],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["C","A","A"],["A","A","A"],["B","C","D"]], "word": "AAB" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [1, 2, 3, 4, 5], "target": 9},
+        "output": [3, 4],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B"],["C","D"]], "word": "AC" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [5, 5, 11, 3], "target": 10},
+        "output": [0, 1],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A"]], "word": "A" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [0, 4, 3, 0], "target": 0},
+        "output": [0, 3],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","A","A","A"],["A","A","A","A"],["A","A","A","A"]], "word": "AAAAAAAAAAAAA" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [-3, 4, 3, 90], "target": 0},
+        "output": [0, 2],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C","D"],["E","F","G","H"],["I","J","K","L"]], "word": "FJ" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [1, 5, 3, 7, 2, 8], "target": 10},
+        "output": [2, 3],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B"],["C","D"]], "word": "ABCD" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [3, 5, 7, 8, 4, 2], "target": 9},
+        "output": [1, 4],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C"],["D","E","F"],["G","H","I"]], "word": "AEI" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [1, 2, 3, 4, 5, 6, 7], "target": 13},
+        "output": [5, 6],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C","D"],["E","F","G","H"],["I","J","K","L"],["M","N","O","P"]], "word": "BCGH" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [10, 20, 10, 40, 50, 30, 70], "target": 110},
+        "output": [3, 6],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","A","A"],["A","A","A"],["A","A","A"]], "word": "AAAAA" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [1, 1, 1, 1, 1, 1], "target": 2},
+        "output": [0, 1],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C"],["D","E","F"],["G","H","I"]], "word": "FG" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [-1, -2, -3, -4, -5], "target": -8},
+        "output": [2, 4],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["C","A","A"],["A","A","A"],["B","C","D"]], "word": "CDA" },
-        "output": True,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [2, 5, 5, 11, 1], "target": 10},
+        "output": [1, 2],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     },
     {
-        "input": { "board": [["A","B","C"],["D","E","F"],["G","H","I"]], "word": "ABCDE" },
-        "output": False,
-        "input_type": { "board": "list[list[str]]", "word": "str" },
-        "output_type": { "result": "bool" }
+        "input": {"nums": [1, 3, 3, 6, 10], "target": 9},
+        "output": [2, 3],
+        "input_type": {"nums": "list[int]", "target": "int"},
+        "output_type": {"result": "list[int]"}
     }
 
 
@@ -105,7 +105,7 @@ class Command(BaseCommand):
 ]
         
 
-        task = Task.objects.get(title="Word Search")
+        task = Task.objects.get(title="Two Sum")
 
         for test_case_data in test_cases:
             TestCase.objects.get_or_create(
