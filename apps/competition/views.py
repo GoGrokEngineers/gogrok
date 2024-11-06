@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
+from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
 from .serializers import CompetionJoinSerializer, CompetitionValidateSerializer
 
@@ -17,7 +17,6 @@ class CompetitionCreateView(APIView):
 
         competitions_data = []
         
-        # Loop through each key to retrieve actual competition data
         for comp_uid in competition_keys:
             competition = cache.get(comp_uid)
             if competition:
@@ -33,13 +32,21 @@ class CompetitionCreateView(APIView):
         }, status=status.HTTP_200_OK)
 
     def post(self, request):
-
         serializer = CompetitionValidateSerializer(data=request.data)
         if serializer.is_valid():
+            difficulty = serializer.validated_data.get("difficulty")
+            task = get_random(difficulty)
+
+            if not task:
+                return Response({"success": False, "message": "No task available for the specified difficulty."}, 
+                                status=status.HTTP_404_NOT_FOUND)
+            
+
             comp_uid = generator_uid()
             comp_data = {
                 "competition_uid": comp_uid,
-                **serializer.validated_data,  
+                **serializer.validated_data,
+                "task_id": task.title,  
                 "created_at": timezone.now(),
                 "results": [],
             }
@@ -51,6 +58,7 @@ class CompetitionCreateView(APIView):
             return Response({
                 "success": True,
                 "competition_uid": comp_uid,
+                "task": {"id" : task.id, "title": task.title, "difficulty": task.difficulty, "description" : task.description, "task_testcases" : task.test_cases.all().values("input", "output", "input_type", "output_type")}, # "task_testcases" : task.test_cases()
                 "message": "Competition created successfully."
             }, status=status.HTTP_201_CREATED)
 
@@ -102,3 +110,4 @@ class JoinCompetitionView(APIView):
             "participant_id": participant_id,
             "message": "Successfully joined the competition."
         }, status=status.HTTP_200_OK)        
+

@@ -1,44 +1,79 @@
 import subprocess
-from apps.test_case.models import TestCase
 import os
+import json
 
 def delete_file(file_path):
-    file_path = "path/to/your/file.txt"
     if os.path.exists(file_path):
         os.remove(file_path)
 
 
-def format_cases(task):
-    cases = TestCase.objects.filter(task=task)
-    result = []
-    for task, input, output, input_type, output_type in cases:
-        buff = {"input": input, "expected_output": output}
-        result.append(buff)
+def evaluate_code(code: str, task, competition_uid, nick_name):
     
-    return result
-
-def evaluate_code(code: str, task, competion_uid, nick_name):
-    file_name = f"submission_{nick_name}_{competion_uid}.py"
-    with open(file_name, "w") as f:
-        f.write(code)
-
+    folder = "submissions"
     results = []
-    test_cases = format_cases(task)
-    for i, test_case in enumerate(test_cases):
-        result = subprocess.run(
-            ['python', file_name],
-            input=test_case['input'],
-            text=True,
-            capture_output=True
-        )
+    all_passed = True
 
-        if result.returncode == 0:
-            if result.stdout.strip() == test_case['expected_output'].strip():
-                results.append({"test_case": i + 1, "result": "pass", "output": result.stdout})
-            else:
-                results.append({"test_case": i + 1, "result": "fail", "output": result.stdout, "expected": test_case['expected_output']})
-        else:
-            results.append({"test_case": i + 1, "result": "error", "error": result.stderr})
 
-    delete_file(file_name)
+    file_name = os.path.join(folder, f"submission_{nick_name}_{competition_uid}.py")
+    try:
+        # Write the user's code to the temporary file
+        with open(file_name, "w") as f:
+            f.write(code)
+
+        # Prepare results for each test case associated with the task
+        test_cases = task.test_cases.all()  
+        
+        for i, test_case in enumerate(test_cases):
+            # Convert the input data to JSON
+            input_data = json.dumps(test_case.input)
+            print(input_data)
+           
+            try:
+                result = subprocess.run(
+                    ['python', file_name],
+                    input=input_data,  
+                    text=True,
+                    capture_output=True,
+                    timeout=5  
+                )
+                print(result)
+                
+                # Check results against expected output
+                if result.returncode == 0:
+                    actual_output = result.stdout.strip()
+                    expected_output = str(test_case.output)
+                    
+                    if actual_output == expected_output:
+                        results.append({
+                            "test_case": i + 1,
+                            "result": "pass",
+                            "output": actual_output
+                        })
+                    else:
+                        results.append({
+                            "test_case": i + 1,
+                            "result": "fail",
+                            "output": actual_output,
+                            "expected": expected_output
+                        })
+                        all_passed = False
+                else:
+                    results.append({
+                        "test_case": i + 1,
+                        "result": "error",
+                        "error": result.stderr.strip()
+                    })
+                    all_passed = False
+
+            except subprocess.TimeoutExpired:
+                results.append({
+                    "test_case": i + 1,
+                    "result": "error",
+                    "error": "Execution timed out."
+                })
+
+    finally:
+        if all_passed:
+            delete_file(file_name)
+
     return results

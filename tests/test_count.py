@@ -1,9 +1,5 @@
 # In order to know count of the testcases of each task
 
-
-
-
-
 import os
 import django
 
