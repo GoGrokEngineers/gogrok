@@ -84,9 +84,9 @@ class JoinCompetitionView(APIView):
             "id": participant_id,
             'is_solved': False,
             # Future feature placeholders (commented out if not used)
-            # 'time_took': 0,
-            # 'score': 0,
-            # 'responses': []
+            'time_took': 0,
+            'score': 0,
+            'responses': []
         }
 
         

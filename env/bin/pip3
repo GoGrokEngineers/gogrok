@@ -1,4 +1,4 @@
-#!/mnt/c/Users/User/Desktop/GoGrok/env/bin/python3
+#!/Users/freelancer/Desktop/gogrok/env/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
