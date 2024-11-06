@@ -36,5 +36,3 @@ class Cache:
 
     def clear(self):
         self.cache.clear()
-
-

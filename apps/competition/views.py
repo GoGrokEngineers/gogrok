@@ -6,7 +6,9 @@ from rest_framework.views import APIView
 
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
-from .serializers import CompetionJoinSerializer, CompetitionValidateSerializer
+from apps.competition.utils.evaluate_code import evaluate_code
+from .serializers import CompetionJoinSerializer, CompetitionValidateSerializer, SumbitCodeSerializer
+from apps.task.models import Task
 
 competitions_list = []
 class CompetitionCreateView(APIView):
@@ -46,7 +48,7 @@ class CompetitionCreateView(APIView):
             comp_data = {
                 "competition_uid": comp_uid,
                 **serializer.validated_data,
-                "task_id": task.title,  
+                "task_title": task.title,  
                 "created_at": timezone.now(),
                 "results": [],
             }
@@ -92,15 +94,15 @@ class JoinCompetitionView(APIView):
             "id": participant_id,
             'is_solved': False,
             # Future feature placeholders (commented out if not used)
-            # 'time_took': 0,
-            # 'score': 0,
-            # 'responses': []
+            'time_took': 0,
+            'score': 0,
+            'responses': []
         }
 
         
         cache.set(comp_uid, competition_data, timeout=competition_data.get("duration", 0) * 60)  # Duration in seconds
 
-        # Print competition data for debugging
+   
         print(f"Competition Data: {competition_data}, Type: {type(competition_data)}")
 
       
@@ -111,3 +113,62 @@ class JoinCompetitionView(APIView):
             "message": "Successfully joined the competition."
         }, status=status.HTTP_200_OK)        
 
+
+class SumbitCodeView(APIView):
+    def post(self, request):
+        serializer = SumbitCodeSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        comp_uid = serializer.validated_data.get("comp_uid")
+        nickname = serializer.validated_data.get("nickname")
+        user_code = serializer.validated_data.get("code")
+        print(user_code)
+        competition_data = cache.get(comp_uid)
+
+        if not competition_data:
+            return Response({"success": False, "error": "Competition not found or expired."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+        if nickname not in competition_data["participants"]:
+            return Response({"success": False, "error": "Participant not found in this competition."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+        task_title = competition_data["task_title"]
+        task = Task.objects.get(title=task_title)
+
+        results = evaluate_code(code=user_code, task=task, competition_uid=comp_uid, nick_name=nickname)
+        print(results)
+        all_passed = all(result["result"] == "pass" for result in results)
+        participant_data = competition_data["participants"][nickname]
+        
+        if all_passed:
+            participant_data["is_solved"] = True
+            participant_data["solved_at"] = timezone.now()
+            competition_data["results"].append({
+                "nickname": nickname,
+                "status": "Solved",
+                "time": timezone.now(),
+                "results": results
+            })
+            message = "All test cases passed! Task solved successfully."
+        else:
+            competition_data["results"].append({
+                "nickname": nickname,
+                "status": "Failed",
+                "time": timezone.now(),
+                "results": results
+            })
+            message = "Code submitted, but not all test cases passed."
+
+
+        cache.set(comp_uid, competition_data, timeout=competition_data.get("duration", 0) * 60)
+
+        # Send response
+        return Response({
+            "success": True,
+            "message": message,
+            "results": results
+        }, status=status.HTTP_200_OK)
