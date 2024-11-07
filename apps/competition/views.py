@@ -43,6 +43,10 @@ class CompetitionCreateView(APIView):
             
 
             comp_uid = generator_uid()
+            if cache.get(comp_uid):
+                return Response({"success": False, "message": "Please regenerate again!"}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
             comp_data = {
                 "competition_uid": comp_uid,
                 **serializer.validated_data,
@@ -111,3 +115,17 @@ class JoinCompetitionView(APIView):
             "message": "Successfully joined the competition."
         }, status=status.HTTP_200_OK)        
 
+
+class StatisticsAPIVIew(APIVIew):
+    def get(self, request):
+        comp_uid = request.data.get('comp_uid')
+        competition_data = cache.get(comp_uid)
+        if not competition_data:
+            return Response({"success": False, "error": "Competition not found or expired."}, status=status.HTTP_404_NOT_FOUND)
+       
+        statistics = {}
+        return Response({
+            "success": True,
+            "statistics": statistics
+            
+        }, status=status.HTTP_200_OK)      
