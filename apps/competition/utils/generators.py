@@ -1,5 +1,4 @@
-import uuid
+import random
 
 def generator_uid():
-    unique = uuid.uuid4()
-    return unique
+    hashed = random.randint(100000, 999999)
