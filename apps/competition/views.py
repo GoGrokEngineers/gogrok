@@ -42,7 +42,7 @@ class CompetitionCreateView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             
 
-            comp_uid = generator_uid()
+            comp_uid = str(generator_uid())
             if cache.get(comp_uid):
                 return Response({"success": False, "message": "Please regenerate again!"}, 
                                 status=status.HTTP_400_BAD_REQUEST)
@@ -116,16 +116,43 @@ class JoinCompetitionView(APIView):
         }, status=status.HTTP_200_OK)        
 
 
-class StatisticsAPIVIew(APIVIew):
+class StatisticsAPIVIew(APIView):
     def get(self, request):
-        comp_uid = request.data.get('comp_uid')
+        comp_uid = request.query_params.get('comp_uid')
         competition_data = cache.get(comp_uid)
+        
         if not competition_data:
             return Response({"success": False, "error": "Competition not found or expired."}, status=status.HTTP_404_NOT_FOUND)
-       
-        statistics = {}
+        
+        # Calculate statistics
+        participants = competition_data.get("participants", {})
+        total_participants = len(participants)
+        solved_participants = [p for p in participants.values() if p['is_solved']]
+        
+        solved_count = len(solved_participants)
+        unsolved_count = total_participants - solved_count
+        avg_score = sum(p.get("score", 0) for p in participants.values()) / total_participants if total_participants > 0 else 0
+        avg_time_taken = sum(p.get("time_took", 0) for p in participants.values()) / total_participants if total_participants > 0 else 0
+
+        winner = None
+        if solved_participants:
+            winner = min(solved_participants, key=lambda p: p.get('time_took', float('inf')))
+        
+        statistics = {
+            "total_participants": total_participants,
+            "solved_count": solved_count,
+            "unsolved_count": unsolved_count,
+            "average_score": avg_score,
+            "average_time_taken": avg_time_taken,
+            "winner": {
+                "nickname": winner.get("nickname") if winner else None,
+                "time_took": winner.get("time_took") if winner else None,
+                "score": winner.get("score") if winner else None,
+            } if winner else None
+        }
+
         return Response({
             "success": True,
-            "statistics": statistics
-            
-        }, status=status.HTTP_200_OK)      
+            "statistics": statistics,
+            "message": "Statistics and winner retrieved successfully."
+        }, status=status.HTTP_200_OK)     
