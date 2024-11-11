@@ -37,14 +37,18 @@ class CompetitionCreateView(APIView):
         serializer = CompetitionValidateSerializer(data=request.data)
         if serializer.is_valid():
             difficulty = serializer.validated_data.get("difficulty")
-            task = get_random(difficulty)
-
+            # task = get_random(difficulty)
+            task = Task.objects.get(title="Two Sum")
             if not task:
                 return Response({"success": False, "message": "No task available for the specified difficulty."}, 
                                 status=status.HTTP_404_NOT_FOUND)
             
 
-            comp_uid = generator_uid()
+            comp_uid = str(generator_uid())
+            if cache.get(comp_uid):
+                return Response({"success": False, "message": "Please regenerate again!"}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
             comp_data = {
                 "competition_uid": comp_uid,
                 **serializer.validated_data,
@@ -94,8 +98,7 @@ class JoinCompetitionView(APIView):
             "id": participant_id,
             'is_solved': False,
             # Future feature placeholders (commented out if not used)
-            'time_took': 0,
-            'score': 0,
+            # 'score': 0,
             'responses': []
         }
 
@@ -146,12 +149,16 @@ class SumbitCodeView(APIView):
         
         if all_passed:
             participant_data["is_solved"] = True
-            participant_data["solved_at"] = timezone.now()
+            end_time = timezone.now()
+            participant_data["solved_at"] = end_time
+            time_taken = (end_time - competition_data["created_at"]).total_seconds()
+            participant_data["time_took"] = time_taken
             competition_data["results"].append({
                 "nickname": nickname,
                 "status": "Solved",
-                "time": timezone.now(),
-                "results": results
+                "time": end_time,
+                "results": results,
+                "time_taken": time_taken
             })
             message = "All test cases passed! Task solved successfully."
         else:
@@ -170,5 +177,58 @@ class SumbitCodeView(APIView):
         return Response({
             "success": True,
             "message": message,
-            "results": results
+            "results": results,
+            "time_taken": participant_data.get("time_took")//60 if all_passed else None
         }, status=status.HTTP_200_OK)
+
+
+
+class StatisticsAPIVIew(APIView):
+    def get(self, request):
+        comp_uid = request.query_params.get('comp_uid')
+
+
+        if not comp_uid:
+            return Response({
+                "success": False, 
+                "error": "Competition UID is required."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        competition_data = cache.get(comp_uid)
+        
+        if not competition_data:
+            return Response({"success": False, "error": "Competition not found or expired."}, status=status.HTTP_404_NOT_FOUND)
+        print(competition_data)
+        participants = competition_data.get("participants", {})
+        total_participants = len(participants)
+        solved_participants = [(nickname, p) for nickname, p in participants.items() if p.get('is_solved')]
+        
+        solved_count = len(solved_participants)
+        unsolved_count = total_participants - solved_count
+        avg_time_taken = (sum(p.get("time_took", 0) for p in participants.values()) / total_participants
+                          if total_participants > 0 else 0)
+
+        winner = None
+        if solved_participants:
+            winner_nickname, winner_data = min(solved_participants, key=lambda item: item[1].get('time_took', float('inf')))
+            winner = {
+                "nickname": winner_nickname,
+                "time_took": round(winner_data.get("time_took"), 2),
+            }
+        
+        # Prepare statistics data for the response
+        statistics = {
+            "total_participants": total_participants,
+            "solved_count": solved_count,
+            "unsolved_count": unsolved_count,
+            "average_time_taken": round(avg_time_taken, 2),
+            "winner": winner
+        }
+        print(competition_data)
+        return Response({
+            "success": True,
+            "statistics": statistics,
+            "message": "Statistics and winner retrieved successfully."
+        }, status=status.HTTP_200_OK)     
+
