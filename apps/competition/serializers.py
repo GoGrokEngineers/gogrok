@@ -1,17 +1,34 @@
 from rest_framework import serializers
-from .models import Competition
-import random
-import string
-from apps.task.serializers import TaskSerializer
+
+# from apps.task.serializers import TaskSerializer
+
+DIFFICULTY_CHOICES = {"Easy": "Easy", "Medium": "Medium", "Hard": "Hard"}
+DURATION_CHOICES = {30: 30, 40: 40, 60: 60, 90: 90} 
 
 
+<<<<<<< HEAD
 DIFFICULTY_CHOICES = {"Easy": "Easy", "Medium": "Medium", "Hard": "Hard"}
 DURATION_CHOICES = {30: 30, 40: 40, 60: 60, 90: 90} 
 
 class CompetionValidateSerializer(serializers.Serializer):
     difficulty = serializers.ChoiceField(choices=DIFFICULTY_CHOICES)
     
+=======
+class CompetitionValidateSerializer(serializers.Serializer):
+    comp_uid = serializers.CharField(read_only=True)
+    difficulty = serializers.ChoiceField(choices=DIFFICULTY_CHOICES)
+    duration = serializers.ChoiceField(choices=DURATION_CHOICES)
+    participants = serializers.DictField()
+    results = serializers.ListField(read_only=True)
+>>>>>>> origin/main
 
 class CompetionJoinSerializer(serializers.Serializer):
     comp_uid = serializers.CharField(max_length=50)
-    nick_name = serializers.CharField(max_length=25)
+    nickname = serializers.CharField(max_length=25)
+
+
+
+class SumbitCodeSerializer(serializers.Serializer):
+    comp_uid = serializers.CharField(max_length=50)
+    nickname = serializers.CharField(max_length=25)
+    code = serializers.JSONField()

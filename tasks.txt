@@ -1,1 +1,25 @@
 Pack Funtions to manage Monotonous works
+
+Feruzbek:
+    Prior:
+        Code(syntax) Formatter(code evalution)
+        Test-cases(JSONFILED research)
+
+    Secondary:
+        Logo
+
+
+Musokhon:
+    Prior:
+
+        Manage(Create, Delete) files (code evaluation)
+
+
+
+    Secondary:
+        Logo
+
+
+6
+
+[1, 3, 6, 11]
