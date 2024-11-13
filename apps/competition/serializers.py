@@ -16,3 +16,10 @@ class CompetitionValidateSerializer(serializers.Serializer):
 class CompetionJoinSerializer(serializers.Serializer):
     comp_uid = serializers.CharField(max_length=50)
     nickname = serializers.CharField(max_length=25)
+
+
+
+class SumbitCodeSerializer(serializers.Serializer):
+    comp_uid = serializers.CharField(max_length=50)
+    nickname = serializers.CharField(max_length=25)
+    code = serializers.JSONField()

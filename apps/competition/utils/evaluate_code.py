@@ -1,24 +1,36 @@
 import subprocess
 import os
 import json
+from .generate_function_name import generate_function_name
 
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
 
 
-def evaluate_code(code: str, task, competition_uid, nick_name):
-    
+def evaluate_code(code : str, task, competition_uid, nick_name):
+    function_name = generate_function_name(task)
+    print(function_name)
     folder = "submissions"
     results = []
-    all_passed = True
 
 
     file_name = os.path.join(folder, f"submission_{nick_name}_{competition_uid}.py")
+    wrapper_code = f"""
+if __name__ == "__main__":
+    import sys, json
+    data = json.loads(sys.stdin.read())
+    result = {function_name}(**data)  
+    print(result)
+    """
+        
+         
     try:
         # Write the user's code to the temporary file
         with open(file_name, "w") as f:
             f.write(code)
+            f.write("\n")
+            f.write(wrapper_code)
 
         # Prepare results for each test case associated with the task
         test_cases = task.test_cases.all()  
@@ -30,7 +42,7 @@ def evaluate_code(code: str, task, competition_uid, nick_name):
            
             try:
                 result = subprocess.run(
-                    ['python', file_name],
+                    ['python3', file_name],
                     input=input_data,  
                     text=True,
                     capture_output=True,
@@ -56,14 +68,14 @@ def evaluate_code(code: str, task, competition_uid, nick_name):
                             "output": actual_output,
                             "expected": expected_output
                         })
-                        all_passed = False
+                       
                 else:
                     results.append({
                         "test_case": i + 1,
                         "result": "error",
                         "error": result.stderr.strip()
                     })
-                    all_passed = False
+                    
 
             except subprocess.TimeoutExpired:
                 results.append({
@@ -73,6 +85,7 @@ def evaluate_code(code: str, task, competition_uid, nick_name):
                 })
 
     finally:
+        all_passed = all(result['result'] == 'pass' for result in results)
         if all_passed:
             delete_file(file_name)
 
