@@ -38,7 +38,7 @@ class CompetitionCreateView(APIView):
         if serializer.is_valid():
             difficulty = serializer.validated_data.get("difficulty")
             # task = get_random(difficulty)
-            task = Task.objects.get(title="Two Sum")
+            task = Task.objects.get(title="Missing Number")
             if not task:
                 return Response({"success": False, "message": "No task available for the specified difficulty."}, 
                                 status=status.HTTP_404_NOT_FOUND)
@@ -160,7 +160,7 @@ class SumbitCodeView(APIView):
                 "results": results,
                 "time_taken": time_taken
             })
-            message = "All test cases passed! Task solved successfully."
+            message = "Accepted!"
         else:
             competition_data["results"].append({
                 "nickname": nickname,
@@ -168,7 +168,7 @@ class SumbitCodeView(APIView):
                 "time": timezone.now(),
                 "results": results
             })
-            message = "Code submitted, but not all test cases passed."
+            message = "Wrong Answer"
 
 
         cache.set(comp_uid, competition_data, timeout=competition_data.get("duration", 0) * 60)
