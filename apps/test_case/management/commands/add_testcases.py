@@ -9,103 +9,312 @@ class Command(BaseCommand):
 
         test_cases = [
     {
-        "input": {"nums": [2, 7, 11, 15], "target": 9},
-        "output": [0, 1],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [3, 2, 4], "target": 6},
-        "output": [1, 2],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [3, 3], "target": 6},
-        "output": [0, 1],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [1, 2, 3, 4, 5], "target": 9},
-        "output": [3, 4],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [5, 5, 11, 3], "target": 10},
-        "output": [0, 1],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [0, 4, 3, 0], "target": 0},
-        "output": [0, 3],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [-3, 4, 3, 90], "target": 0},
-        "output": [0, 2],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [1, 5, 3, 7, 2, 8], "target": 10},
-        "output": [2, 3],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [3, 5, 7, 8, 4, 2], "target": 9},
-        "output": [1, 4],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [1, 2, 3, 4, 5, 6, 7], "target": 13},
-        "output": [5, 6],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [10, 20, 10, 40, 50, 30, 70], "target": 110},
-        "output": [3, 6],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [1, 1, 1, 1, 1, 1], "target": 2},
-        "output": [0, 1],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [-1, -2, -3, -4, -5], "target": -8},
-        "output": [2, 4],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [2, 5, 5, 11, 1], "target": 10},
-        "output": [1, 2],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    },
-    {
-        "input": {"nums": [1, 3, 3, 6, 10], "target": 9},
-        "output": [2, 3],
-        "input_type": {"nums": "list[int]", "target": "int"},
-        "output_type": {"result": "list[int]"}
-    }
-
+			"input": {
+				"prices": [
+					7,
+					1,
+					5,
+					3,
+					6,
+					4
+				]
+			},
+			"output": 5,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					7,
+					6,
+					4,
+					3,
+					1
+				]
+			},
+			"output": 0,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					1,
+					2,
+					3,
+					4,
+					5,
+					6,
+					7,
+					8,
+					9
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					9,
+					8,
+					7,
+					6,
+					5,
+					4,
+					3,
+					2,
+					1
+				]
+			},
+			"output": 0,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					2,
+					4,
+					1
+				]
+			},
+			"output": 2,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					1,
+					2,
+					4,
+					2,
+					5,
+					7,
+					2,
+					4,
+					9,
+					0
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					3,
+					3,
+					5,
+					0,
+					0,
+					3,
+					1,
+					4
+				]
+			},
+			"output": 4,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					7,
+					2,
+					5,
+					3,
+					6,
+					1,
+					4
+				]
+			},
+			"output": 4,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					7,
+					1,
+					5,
+					3,
+					6,
+					4,
+					8
+				]
+			},
+			"output": 7,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					1,
+					3,
+					2,
+					8,
+					4,
+					9
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					5,
+					4,
+					3,
+					2,
+					1,
+					10
+				]
+			},
+			"output": 9,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					8,
+					1,
+					2,
+					4,
+					6,
+					3,
+					9
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					3,
+					6,
+					1,
+					3,
+					4,
+					8,
+					2,
+					9
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					1,
+					9,
+					6,
+					4,
+					3,
+					1,
+					8
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"prices": [
+					1,
+					6,
+					7,
+					9,
+					5,
+					3,
+					8
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"prices": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		}
 
 
 
 ]
         
 
-        task = Task.objects.get(title="Two Sum")
+        task = Task.objects.get(title="Best Time to Buy and Sell Stock")
 
         for test_case_data in test_cases:
             TestCase.objects.get_or_create(
