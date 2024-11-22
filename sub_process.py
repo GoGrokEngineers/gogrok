@@ -9,9 +9,10 @@ def evaluate_code():
     ]
 
     file_name = "test.py"  # Assumes test.py with square_elements function is already present
-
+   
     for i, test_case in enumerate(test_cases):
         # Run test.py and pass input as a JSON string argument
+    
         result = subprocess.run(
             ['python3', file_name, json.dumps(test_case['input'])],  # Pass list as JSON string
             text=True,
