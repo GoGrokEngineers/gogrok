@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
 from apps.competition.utils.evaluate_code import evaluate_code
-from .serializers import CompetionJoinSerializer, CompetitionValidateSerializer, SumbitCodeSerializer
+from .serializers import CompetionJoinSerializer, CompetitionValidateSerializer, SubmitCodeSerializer
 from apps.task.models import Task
 
 competitions_list = []
