@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-# from apps.task.serializers import TaskSerializer
 
 DIFFICULTY_CHOICES = {"Easy": "Easy", "Medium": "Medium", "Hard": "Hard"}
 DURATION_CHOICES = {30: 30, 40: 40, 60: 60, 90: 90} 

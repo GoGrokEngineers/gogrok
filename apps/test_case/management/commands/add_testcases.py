@@ -10,96 +10,15 @@ class Command(BaseCommand):
         test_cases = [
     {
 			"input": {
-				"prices": [
-					7,
-					1,
-					5,
+				"nums": [
 					3,
-					6,
-					4
-				]
-			},
-			"output": 5,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					7,
-					6,
-					4,
-					3,
-					1
-				]
-			},
-			"output": 0,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					1,
-					2,
-					3,
-					4,
-					5,
-					6,
-					7,
-					8,
-					9
-				]
-			},
-			"output": 8,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					9,
-					8,
-					7,
-					6,
-					5,
-					4,
-					3,
-					2,
-					1
-				]
-			},
-			"output": 0,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					2,
-					4,
+					0,
 					1
 				]
 			},
 			"output": 2,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -107,22 +26,50 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					1,
-					2,
+				"nums": [
+					0,
+					1
+				]
+			},
+			"output": 2,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
+					9,
+					6,
 					4,
 					2,
+					3,
 					5,
 					7,
-					2,
-					4,
-					9,
+					0,
+					1
+				]
+			},
+			"output": 8,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
 					0
 				]
 			},
-			"output": 8,
+			"output": 1,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -130,20 +77,13 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					3,
-					3,
-					5,
-					0,
-					0,
-					3,
-					1,
-					4
+				"nums": [
+					1
 				]
 			},
-			"output": 4,
+			"output": 0,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -151,58 +91,20 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					7,
-					2,
-					5,
+				"nums": [
 					3,
-					6,
-					1,
-					4
-				]
-			},
-			"output": 4,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
 					7,
 					1,
-					5,
-					3,
-					6,
-					4,
-					8
-				]
-			},
-			"output": 7,
-			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					1,
-					3,
 					2,
 					8,
 					4,
-					9
+					5,
+					0
 				]
 			},
-			"output": 8,
+			"output": 6,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -210,18 +112,139 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
+				"nums": [
+					45,
+					35,
+					44,
+					30,
+					40,
+					33,
+					36,
+					43,
+					41,
+					32,
+					31,
+					29,
+					42,
+					38,
+					37,
+					34,
+					46,
+					39,
+					47,
+					48
+				]
+			},
+			"output": 49,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
+					10000,
+					0,
+					9998,
+					9999,
+					1,
+					3,
+					9997,
+					9996,
+					9995,
+					2
+				]
+			},
+			"output": 4,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
+					0,
+					3,
+					4,
+					2
+				]
+			},
+			"output": 1,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
 					5,
 					4,
 					3,
-					2,
 					1,
+					2,
+					0,
+					7,
+					8,
+					9
+				]
+			},
+			"output": 6,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
+					8,
+					6,
+					4,
+					3,
+					7,
+					1,
+					0,
+					2,
+					5
+				]
+			},
+			"output": 9,
+			"input_type": {
+				"nums": "List[int]"
+			},
+			"output_type": {
+				"result": "int"
+			}
+		},
+		{
+			"input": {
+				"nums": [
+					0,
+					5,
+					3,
+					1,
+					2,
+					4,
+					6,
+					8,
+					7,
 					10
 				]
 			},
 			"output": 9,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -229,19 +252,17 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					8,
-					1,
+				"nums": [
+					0,
 					2,
-					4,
-					6,
 					3,
-					9
+					1,
+					5
 				]
 			},
-			"output": 8,
+			"output": 4,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -249,20 +270,18 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					3,
-					6,
-					1,
-					3,
-					4,
-					8,
-					2,
-					9
+				"nums": [
+					100000,
+					99998,
+					99997,
+					99996,
+					99999,
+					100001
 				]
 			},
-			"output": 8,
+			"output": 99995,
 			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -270,39 +289,16 @@ class Command(BaseCommand):
 		},
 		{
 			"input": {
-				"prices": [
-					1,
-					9,
-					6,
-					4,
-					3,
-					1,
-					8
+				"nums": [
+					100000,
+					99999,
+					100001,
+					100002
 				]
 			},
-			"output": 8,
+			"output": 99998,
 			"input_type": {
-				"prices": "List[int]"
-			},
-			"output_type": {
-				"result": "int"
-			}
-		},
-		{
-			"input": {
-				"prices": [
-					1,
-					6,
-					7,
-					9,
-					5,
-					3,
-					8
-				]
-			},
-			"output": 8,
-			"input_type": {
-				"prices": "List[int]"
+				"nums": "List[int]"
 			},
 			"output_type": {
 				"result": "int"
@@ -314,7 +310,7 @@ class Command(BaseCommand):
 ]
         
 
-        task = Task.objects.get(title="Best Time to Buy and Sell Stock")
+        task = Task.objects.get(title="Missing Number")
 
         for test_case_data in test_cases:
             TestCase.objects.get_or_create(
