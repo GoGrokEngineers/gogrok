@@ -1,6 +1,6 @@
 name: Django CI/CD Pipeline for Linode
 
-on:
+on: 
   push:
     branches:
       - main  # Run on pushes to the main branch

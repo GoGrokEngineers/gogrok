@@ -59,7 +59,7 @@ class CompetitionCreateView(APIView):
         difficulty = serializer.validated_data.get("difficulty")
 
         # Replace with a random task retrieval if necessary
-        task = Task.objects.filter(difficulty=difficulty).first()
+        task = get_random(difficulty=difficulty)
         if not task:
             return Response(
                 {"success": False, "message": "No task available for the specified difficulty."},
