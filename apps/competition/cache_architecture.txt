@@ -1,5 +1,5 @@
 
-chache = {
+cache = {
     "comp_uid: {
         "participants": {
             "nickname: {
