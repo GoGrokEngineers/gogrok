@@ -7,7 +7,7 @@ docker-compose build
 
 
 @ Run the docker container with compose
-dcoker-compose up
+docker-compose up
 
 
 @ Run the docker container
