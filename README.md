@@ -57,6 +57,6 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 📬 Contact Us
 Have questions, feedback, or feature requests? Reach out:
 
-Email: support@competitivecodingarena.com
+Email: karakhujaev@gmail.com & feruzbek@gmail.com 
 GitHub: Competitive Coding Arena
 Join the revolution in algorithmic challenges — because coding is better with friends! 🧑‍💻👩‍💻
