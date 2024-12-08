@@ -23,7 +23,7 @@ jobs:
       - name: Deploy to Linode with Docker Compose
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@139.162.134.90 << 'EOF'
-          cd /
+          cd /gogrok
           git pull origin main
           docker-compose down
           docker-compose up -d --build
@@ -33,6 +33,6 @@ jobs:
         if: failure()
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@139.162.134.90 << 'EOF'
-          cd /
+          cd /gogrok
           docker-compose logs
           EOF
