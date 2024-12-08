@@ -1,5 +1,4 @@
-
-README: Gogrok: Competitive Coding Arena
+Gogrok: Competitive Coding Arena
 🎯 Project Overview
 Welcome to Competitive Coding Arena — a dynamic platform that brings friendly competition to Data Structures and Algorithms enthusiasts. Think of it as a gamified version of LeetCode, but tailored for private challenges with friends and colleagues. Engineers can now compete in real-time, sharpen their coding skills, and brag about their victories! 🚀
 
