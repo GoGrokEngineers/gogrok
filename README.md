@@ -47,6 +47,6 @@ Gogrok: Competitive Coding Arena
 
   Have questions, feedback, or feature requests? Reach out:
   
-  Email: karakhujaev@gmail.com & feruzbek@gmail.com 
+  Email: karakhujaev@gmail.com & feruzbek.dev@gmail.com 
   GitHub: Competitive Coding Arena
   Join the revolution in algorithmic challenges — because coding is better with friends! 🧑‍💻👩‍💻
