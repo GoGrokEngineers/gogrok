@@ -2,6 +2,14 @@
 docker build -t gogrok-app .
 
 
+@ Build the docker image with compose
+docker-compose build
+
+
+@ Run the docker container with compose
+docker-compose up
+
+
 @ Run the docker container
 docker run -p 8000:8000 gogrok-app
 

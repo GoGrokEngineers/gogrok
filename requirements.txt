@@ -13,3 +13,4 @@ packaging==24.1
 redis==5.1.1
 setuptools==75.3.0
 sqlparse==0.5.1
+drf-yasg==1.21.8
