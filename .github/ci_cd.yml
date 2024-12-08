@@ -1,6 +1,8 @@
 name: Django CI/CD Pipeline for Linode
 
 on:
+  run: 
+    pylint ./
   push:
     branches:
       - main  # Run on pushes to the main branch
@@ -25,7 +27,7 @@ jobs:
 
       - name: Deploy to Linode
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@139.162.134.90 << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
           cd /
           git pull origin main
           source /venv/bin/activate

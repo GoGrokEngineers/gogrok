@@ -111,7 +111,7 @@ class JoinCompetitionView(APIView):
             )
 
         comp_uid = serializer.validated_data.get("comp_uid")
-        nickname = serializer.validated_data.get("nickname")
+        nickname = serializer.data.get("nickname")
 
         competition_data, error_response = get_competition_data(comp_uid)
         if error_response:
