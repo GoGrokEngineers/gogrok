@@ -58,10 +58,10 @@ class CompetitionCreateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # difficulty = serializer.validated_data.get("difficulty")
-        task = Task.objects.get(title="Majority Element")
+        difficulty = serializer.validated_data.get("difficulty")
+       
       
-        # task = get_random(difficulty=difficulty)
+        task = get_random(difficulty=difficulty)
         if not task:
             return Response(
                 {"success": False, "message": "No task available for the specified difficulty."},
