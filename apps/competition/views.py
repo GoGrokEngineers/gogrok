@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
 from apps.competition.utils.evaluate_code import evaluate_code
+from apps.competition.utils.generate_function_name import generate_function_name
+
 from .serializers import (
     CompetitionJoinSerializer,
     CompetitionValidateSerializer,
@@ -56,10 +58,10 @@ class CompetitionCreateView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        difficulty = serializer.validated_data.get("difficulty")
-
-        # Replace with a random task retrieval if necessary
-        task = get_random(difficulty=difficulty)
+        # difficulty = serializer.validated_data.get("difficulty")
+        task = Task.objects.get(title="Majority Element")
+      
+        # task = get_random(difficulty=difficulty)
         if not task:
             return Response(
                 {"success": False, "message": "No task available for the specified difficulty."},
@@ -72,11 +74,13 @@ class CompetitionCreateView(APIView):
                 {"success": False, "message": "Please regenerate again!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        function_name = generate_function_name(task)
 
         comp_data = {
             "competition_uid": comp_uid,
             **serializer.validated_data,
             "task_title": task.title,
+            "function_name": function_name,
             "created_at": timezone.now(),
             "results": [],
         }
@@ -96,6 +100,7 @@ class CompetitionCreateView(APIView):
                 "success": True,
                 "competition_uid": comp_uid,
                 "task": task_data,
+                "function_name": function_name,
                 "message": "Competition created successfully.",
             },
             status=status.HTTP_201_CREATED,
