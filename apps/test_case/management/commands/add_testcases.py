@@ -10,11 +10,63 @@ class Command(BaseCommand):
         test_cases = [
             {
             "input": {
-                "nums": [3, 2, 3]
+                "root": {
+                    "val": 3,
+                    "left": {
+                        "val": 1,
+                        "left": None,
+                        "right": {
+                            "val": 2,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 4,
+                        "left": None,
+                        "right": None
+                    }
+                },
+                "k": 1
+            },
+            "output": 1,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 5,
+                    "left": {
+                        "val": 3,
+                        "left": {
+                            "val": 2,
+                            "left": {
+                                "val": 1,
+                                "left": None,
+                                "right": None
+                            },
+                            "right": None
+                        },
+                        "right": None
+                    },
+                    "right": {
+                        "val": 6,
+                        "left": None,
+                        "right": None
+                    }
+                },
+                "k": 3
             },
             "output": 3,
             "input_type": {
-                "nums": "list[int]"
+                "root": "TreeNode",
+                "k": "int"
             },
             "output_type": {
                 "result": "int"
@@ -22,47 +74,41 @@ class Command(BaseCommand):
         },
         {
             "input": {
-                "nums": [2, 2, 1, 1, 1, 2, 2]
-            },
-            "output": 2,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [1]
-            },
-            "output": 1,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [1, 1, 2]
-            },
-            "output": 1,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [5, 5, 5, 2, 3, 5, 5]
+                "root": {
+                    "val": 7,
+                    "left": {
+                        "val": 5,
+                        "left": {
+                            "val": 3,
+                            "left": {
+                                "val": 2,
+                                "left": None,
+                                "right": None
+                            },
+                            "right": None
+                        },
+                        "right": {
+                            "val": 6,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 9,
+                        "left": {
+                            "val": 8,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": None
+                    }
+                },
+                "k": 4
             },
             "output": 5,
             "input_type": {
-                "nums": "list[int]"
+                "root": "TreeNode",
+                "k": "int"
             },
             "output_type": {
                 "result": "int"
@@ -70,59 +116,247 @@ class Command(BaseCommand):
         },
         {
             "input": {
-                "nums": [8, 8, 8, 1, 2, 3, 8, 8, 8]
-            },
-            "output": 8,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [10, 10, 10, 10, 1, 2, 3]
-            },
-            "output": 10,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [9, 9, 9, 9, 9, 3, 3, 3]
-            },
-            "output": 9,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [6, 6, 6, 7, 7, 7, 7]
-            },
-            "output": 7,
-            "input_type": {
-                "nums": "list[int]"
-            },
-            "output_type": {
-                "result": "int"
-            }
-        },
-        {
-            "input": {
-                "nums": [1, 2, 3, 2, 2, 2, 2]
+                "root": {
+                    "val": 1,
+                    "left": None,
+                    "right": {
+                        "val": 2,
+                        "left": None,
+                        "right": {
+                            "val": 3,
+                            "left": None,
+                            "right": None
+                        }
+                    }
+                },
+                "k": 2
             },
             "output": 2,
             "input_type": {
-                "nums": "list[int]"
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 10,
+                    "left": {
+                        "val": 5,
+                        "left": {
+                            "val": 3,
+                            "left": {
+                                "val": 2,
+                                "left": None,
+                                "right": None
+                            },
+                            "right": None
+                        },
+                        "right": {
+                            "val": 7,
+                            "left": {
+                                "val": 6,
+                                "left": None,
+                                "right": None
+                            },
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 15,
+                        "left": {
+                            "val": 13,
+                            "left": None,
+                            "right": {
+                                "val": 14,
+                                "left": None,
+                                "right": None
+                            }
+                        },
+                        "right": {
+                            "val": 20,
+                            "left": None,
+                            "right": None
+                        }
+                    }
+                },
+                "k": 6
+            },
+            "output": 10,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 8,
+                    "left": {
+                        "val": 5,
+                        "left": {
+                            "val": 2,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 6,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 10,
+                        "left": {
+                            "val": 9,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": None
+                    }
+                },
+                "k": 2
+            },
+            "output": 6,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 20,
+                    "left": {
+                        "val": 10,
+                        "left": {
+                            "val": 5,
+                            "left": {
+                                "val": 3,
+                                "left": None,
+                                "right": None
+                            },
+                            "right": None
+                        },
+                        "right": {
+                            "val": 15,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 30,
+                        "left": {
+                            "val": 25,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 35,
+                            "left": None,
+                            "right": None
+                        }
+                    }
+                },
+                "k": 5
+            },
+            "output": 15,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 12,
+                    "left": {
+                        "val": 7,
+                        "left": {
+                            "val": 5,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 10,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 15,
+                        "left": {
+                            "val": 14,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 18,
+                            "left": None,
+                            "right": None
+                        }
+                    }
+                },
+                "k": 4
+            },
+            "output": 12,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
+            },
+            "output_type": {
+                "result": "int"
+            }
+        },
+        {
+            "input": {
+                "root": {
+                    "val": 50,
+                    "left": {
+                        "val": 30,
+                        "left": {
+                            "val": 20,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 40,
+                            "left": None,
+                            "right": None
+                        }
+                    },
+                    "right": {
+                        "val": 70,
+                        "left": {
+                            "val": 60,
+                            "left": None,
+                            "right": None
+                        },
+                        "right": {
+                            "val": 80,
+                            "left": None,
+                            "right": None
+                        }
+                    }
+                },
+                "k": 7
+            },
+            "output": 70,
+            "input_type": {
+                "root": "TreeNode",
+                "k": "int"
             },
             "output_type": {
                 "result": "int"
@@ -131,7 +365,7 @@ class Command(BaseCommand):
 		]
         
 
-        task = Task.objects.get(title="Majority Element")
+        task = Task.objects.get(title="Kth Smallest Element in a BST")
 
         for test_case_data in test_cases:
             TestCase.objects.get_or_create(
