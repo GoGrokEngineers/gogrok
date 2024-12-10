@@ -9,6 +9,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/gogrok
+      - /gogrok/staticfiles
     environment:
       - REDIS_URL=redis://redis:6379/1  # Docker service name
     depends_on:
