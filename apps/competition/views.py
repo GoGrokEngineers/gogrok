@@ -59,7 +59,7 @@ class CompetitionCreateView(APIView):
             )
 
         difficulty = serializer.validated_data.get("difficulty")
-       
+        # task = Task.objects.get(title="Missing Number")
       
         task = get_random(difficulty=difficulty)
         if not task:

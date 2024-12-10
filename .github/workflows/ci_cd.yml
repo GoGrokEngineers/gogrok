@@ -16,13 +16,13 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
 
       - name: Deploy to Linode with Docker Compose
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
           cd /gogrok
           git pull origin main
           docker-compose down
@@ -32,7 +32,7 @@ jobs:
       - name: Debug Docker Compose logs
         if: failure()
         run: |
-          ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
           cd /gogrok
           docker-compose logs
           EOF
