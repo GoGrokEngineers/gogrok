@@ -1,14 +1,14 @@
 import pandas as pd
 import os
 
-# Function to get the next available ID
+
 def get_next_id(output_file):
     if os.path.exists(output_file):
-        # Load the output file to find the highest ID
+        
         output_df = pd.read_csv(output_file)
         if 'id' in output_df.columns and not output_df.empty:
-            return output_df['id'].max() + 1  # Get the next sequential ID
-    return 1  # Start at 1 if the file doesn't exist or is empty
+            return output_df['id'].max() + 1  
+    return 1  
 
 # Function to add tasks to CSV, either from dataset or custom tasks
 def add_task_to_csv(input_file, output_file, task_title, custom_description=None, custom_difficulty=None):
