@@ -40,18 +40,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_spectacular',
     'django_redis',
     'redis',
     'corsheaders',
     'ckeditor',
-    "drf_yasg",
+ 
     
 
     'apps.competition',
     'apps.task',
     'apps.test_case',
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 
 MIDDLEWARE = [
