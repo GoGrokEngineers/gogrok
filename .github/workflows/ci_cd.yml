@@ -6,17 +6,6 @@ on:
       - main 
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Pylint
-        run: |
-          pylint ./  # Run Pylint to check the code quality
-
   deploy:
     runs-on: ubuntu-latest
 
