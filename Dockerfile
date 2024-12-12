@@ -1,20 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10
+FROM python:3.12-slim
 
-# Set environment variable to avoid buffering
-ENV PYTHONUNBUFFERED=1
+WORKDIR /root/gogrok
 
-WORKDIR /gogrok
+COPY requirements.txt /root/gogrok/
+RUN pip install -r requirements.txt
 
-# Copy the current directory contents into the container at /gogrok 
-COPY . .
+COPY . /root/gogrok/
 
-# Install the required packages
-RUN pip install --no-cache-dir -r requirements.txt
-
-
-# Expose the port the app runs on
 EXPOSE 8000
 
-# Run the Django development server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+ENV DJANGO_SETTINGS_MODULE=config.settings
+
+# Run Gunicorn as the entry point
+CMD ["gunicorn", "--workers", "3", "--bind", "unix:/root/gogrok/gogrok.sock", "--access-logfile", "/root/gogrok/logs/gunicorn_access.log", "--error-logfile", "/root/gogrok/logs/gunicorn_error.log", "config.wsgi:application"]
