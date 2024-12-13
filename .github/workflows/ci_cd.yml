@@ -3,7 +3,7 @@ name: Django CI/CD Pipeline for Linode
 on:
   push:
     branches:
-      - main 
+      - main  # Run on pushes to the main branch
 
 jobs:
   deploy:
@@ -16,9 +16,9 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjsSqGVdBeBbIfI9VhbCDnhEqSwqTYv8iefUlTai20A root@localhost" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts  # Add Linode server to known hosts
 
       - name: Deploy to Linode with Docker Compose
         run: |
