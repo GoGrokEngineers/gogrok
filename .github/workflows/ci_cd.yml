@@ -3,7 +3,7 @@ name: Django CI/CD Pipeline for Linode
 on:
   push:
     branches:
-      - main  # Run on pushes to the main branch
+      - main  
 
 jobs:
   deploy:
@@ -15,24 +15,29 @@ jobs:
 
       - name: Set up SSH
         run: |
-          mkdir -p ~/.ssh
-          echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjsSqGVdBeBbIfI9VhbCDnhEqSwqTYv8iefUlTai20A root@localhost" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts  # Add Linode server to known hosts
+          mkdir -p ~/.ssh  # Create the .ssh directory if it doesn't exist
+          echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa  # Set the correct permissions for the private key
+          chmod 700 ~/.ssh  # Ensure the .ssh directory has correct permissions
+          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 "echo 'SSH connection successful'"
 
       - name: Deploy to Linode with Docker Compose
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-          cd /gogrok
+          cd /root/gogrok/
           git pull origin main
           docker-compose down
-          docker-compose up -d --build
+          docker-compose up -d --build  # Rebuild and restart the containers in detached mode
           EOF
-
-      - name: Debug Docker Compose logs
-        if: failure()
+        
+      - name: Debug Docker Compose logs (if deployment fails)
+        if: failure() 
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-          cd /gogrok
+          cd /root/gogrok
           docker-compose logs
           EOF
