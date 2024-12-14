@@ -8,37 +8,31 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Linode
     steps:
-      # Step 1: Checkout code
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Install Linode CLI
-      - name: Install the Linode CLI
-        run: |
-          curl -LO https://raw.githubusercontent.com/linode/linode-cli/main/linode-cli.sh
-          bash linode-cli.sh
-          export PATH=$PATH:/root/.local/bin
+      - name: Install Python Dependencies
+        run: sudo apt-get update && sudo apt-get install -y python3-pip
 
-      # Step 3: Authenticate with Linode CLI
-      - name: Authenticate Linode CLI
+      - name: Install Linode CLI
+        run: pip install linode-cli
+
+      - name: Configure Linode CLI
         env:
-          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: linode-cli linodes list > /dev/null
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: linode-cli configure --token $LINODE_TOKEN
 
-      # Step 4: SSH into the server and deploy
-      - name: Deploy via SSH
+      - name: Deploy Application
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H lish-eu-central.linode.com >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa root@139.162.134.90 <<EOF
-          cd /root/gogrok
+          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa root@139.162.134.90 << EOF
+          cd gogrok
           docker-compose down
-          docker-compose pull
           docker-compose up -d --build
           EOF
