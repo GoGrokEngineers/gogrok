@@ -34,40 +34,9 @@ jobs:
           echo "[DEFAULT]" > ~/.config/linode-cli/config
           echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      # Checkout code again for the deployment stage
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Remove conflicting packages and install Docker and Docker Compose
-      - name: Remove conflicting Docker packages
-        run: |
-          sudo apt-get remove -y containerd containerd.io docker docker-engine docker.io
-          sudo apt-get update
-
-      - name: Install Docker and Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo apt-get install -y docker-compose
-
-      # Navigate to the 'gogrok' directory and build Docker images
-      - name: Build Docker images
-        run: |
-          cd root/gogrok
-          docker-compose -f docker-compose.yml build
-
-      # Deploy the containers (this step may vary based on your requirements)
-      - name: Deploy Docker containers
-        run: |
-          docker-compose -f docker-compose.yml up -d
-
   linode-verify:
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: setup
     steps:
       - name: Run Linode CLI command
         run: linode-cli linodes ls
