@@ -42,8 +42,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Docker and Docker Compose
-      - name: Set up Docker and Docker Compose
+      # Remove conflicting packages and install Docker and Docker Compose
+      - name: Remove conflicting Docker packages
+        run: |
+          sudo apt-get remove -y containerd containerd.io docker docker-engine docker.io
+          sudo apt-get update
+
+      - name: Install Docker and Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker.io
