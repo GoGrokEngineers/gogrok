@@ -42,13 +42,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Build Docker containers using Docker Compose
+      # Install Docker and Docker Compose
+      - name: Set up Docker and Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo apt-get install -y docker-compose
+
+      # Navigate to the 'gogrok' directory and build Docker images
       - name: Build Docker images
-        run: docker-compose -f docker-compose.yml build
+        run: |
+          cd root/gogrok
+          docker-compose -f docker-compose.yml build
 
       # Deploy the containers (this step may vary based on your requirements)
       - name: Deploy Docker containers
-        run: docker-compose -f docker-compose.yml up -d
+        run: |
+          cd root/gogrok
+          docker-compose -f docker-compose.yml up -d
 
   linode-verify:
     runs-on: ubuntu-latest
