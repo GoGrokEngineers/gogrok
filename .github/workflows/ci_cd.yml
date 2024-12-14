@@ -1,43 +1,44 @@
-name: Django CI/CD Pipeline for Linode
+name: CI/CD Pipeline
 
-on: 
+on:
   push:
     branches:
-      - main  
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    name: Deploy to Linode
     steps:
-      - name: Checkout code
+      # Step 1: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
+      # Step 2: Install Linode CLI
+      - name: Install the Linode CLI
+        run: |
+          curl -LO https://raw.githubusercontent.com/linode/linode-cli/main/linode-cli.sh
+          bash linode-cli.sh
+          export PATH=$PATH:/root/.local/bin
 
-      - name: Set up SSH
+      # Step 3: Authenticate with Linode CLI
+      - name: Authenticate Linode CLI
+        env:
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: linode-cli linodes list > /dev/null
+
+      # Step 4: SSH into the server and deploy
+      - name: Deploy via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
-
-      # - name: Deploy to Linode with Docker Compose
-      #   run: |
-      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-      #     cd /gogrok
-      #     git pull origin main
-      #     docker-compose down
-      #     docker-compose up -d --build
-      #     EOF
-
-      # - name: Debug Docker Compose logs
-      #   if: failure()
-      #   run: |
-      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-      #     cd /gogrok
-      #     docker-compose logs
-      #     EOF
+          ssh-keyscan -H lish-eu-central.linode.com >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa root@139.162.134.90 <<EOF
+          cd /root/gogrok
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d --build
+          EOF
