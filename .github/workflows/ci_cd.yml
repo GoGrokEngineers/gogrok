@@ -17,20 +17,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up SSH for connecting to the Linode server
+      # Set up SSH manually
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
       # Configure Linode CLI (Non-Interactive)
       - name: Configure Linode CLI (Non-Interactive)
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: |
-          # Create the directory if it doesn't exist
           mkdir -p ~/.config/linode-cli
-          # Write the token to the configuration file within the correct directory
           echo "[DEFAULT]" > ~/.config/linode-cli/config
           echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
 
