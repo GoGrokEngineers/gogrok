@@ -13,6 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -20,19 +25,19 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
 
-      - name: Deploy to Linode with Docker Compose
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-          cd /gogrok
-          git pull origin main
-          docker-compose down
-          docker-compose up -d --build
-          EOF
+      # - name: Deploy to Linode with Docker Compose
+      #   run: |
+      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
+      #     cd /gogrok
+      #     git pull origin main
+      #     docker-compose down
+      #     docker-compose up -d --build
+      #     EOF
 
-      - name: Debug Docker Compose logs
-        if: failure()
-        run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
-          cd /gogrok
-          docker-compose logs
-          EOF
+      # - name: Debug Docker Compose logs
+      #   if: failure()
+      #   run: |
+      #     ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
+      #     cd /gogrok
+      #     docker-compose logs
+      #     EOF
