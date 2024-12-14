@@ -21,7 +21,11 @@ jobs:
       - name: Configure Linode CLI
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: linode-cli configure --token $LINODE_TOKEN
+        run: |
+          mkdir -p ~/.config/linode-cli
+          echo "[DEFAULT]" > ~/.config/linode-cli
+          echo "default-user = root" >> ~/.config/linode-cli
+          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli
 
       - name: Deploy Application
         env:
