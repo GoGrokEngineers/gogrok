@@ -17,13 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python and Linode CLI using pip
-      - name: Install Linode CLI
+      # Install Python, pip, and Linode CLI
+      - name: Install Python, pip, and Linode CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip
-          pip3 install linode-cli
-
+          pip3 install --user linode-cli
+          echo "$(which linode-cli)"
+      
       # Set up SSH
       - name: Set up SSH
         run: |
