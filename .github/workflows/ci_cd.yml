@@ -4,43 +4,55 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  setup:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      # Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Python Dependencies
-        run: sudo apt-get update && sudo apt-get install -y python3-pip
+      # Set up SSH for connecting to the Linode server
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install Linode CLI
-        run: pip install linode-cli
-
+      # Configure Linode CLI (Non-Interactive)
       - name: Configure Linode CLI (Non-Interactive)
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: |
-          # Create the configuration directory if it doesn't exist
+          # Create the directory if it doesn't exist
           mkdir -p ~/.config/linode-cli
-          # Write the token to the configuration file
-          echo "[DEFAULT]" > ~/.config/linode-cli
-          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli
+          # Write the token to the configuration file within the correct directory
+          echo "[DEFAULT]" > ~/.config/linode-cli/config
+          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
 
-      - name: Deploy Application
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          # Set up SSH key
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          # Add the server's host to known hosts
-          ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
-          # Deploy with Docker
-          ssh -i ~/.ssh/id_rsa root@139.162.134.90 << EOF
-          cd gogrok
-          docker-compose down
-          docker-compose up -d --build
-          EOF
+  deploy:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      # Checkout code again for the deployment stage
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Build Docker containers using Docker Compose
+      - name: Build Docker images
+        run: docker-compose -f docker-compose.yml build
+
+      # Deploy the containers (this step may vary based on your requirements)
+      - name: Deploy Docker containers
+        run: docker-compose -f docker-compose.yml up -d
+
+  linode-verify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Run Linode CLI command
+        run: linode-cli linodes ls
