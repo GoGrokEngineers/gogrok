@@ -63,7 +63,6 @@ jobs:
       # Deploy the containers (this step may vary based on your requirements)
       - name: Deploy Docker containers
         run: |
-          cd root/gogrok
           docker-compose -f docker-compose.yml up -d
 
   linode-verify:
