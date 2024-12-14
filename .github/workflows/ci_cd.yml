@@ -18,23 +18,27 @@ jobs:
       - name: Install Linode CLI
         run: pip install linode-cli
 
-      - name: Configure Linode CLI
+      - name: Configure Linode CLI (Non-Interactive)
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: |
+          # Create the configuration directory if it doesn't exist
           mkdir -p ~/.config/linode-cli
+          # Write the token to the configuration file
           echo "[DEFAULT]" > ~/.config/linode-cli
-          echo "default-user = root" >> ~/.config/linode-cli
           echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli
 
       - name: Deploy Application
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          # Set up SSH key
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          # Add the server's host to known hosts
           ssh-keyscan -H 139.162.134.90 >> ~/.ssh/known_hosts
+          # Deploy with Docker
           ssh -i ~/.ssh/id_rsa root@139.162.134.90 << EOF
           cd gogrok
           docker-compose down
