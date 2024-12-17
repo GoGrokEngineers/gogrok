@@ -13,11 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python and Linode CLI
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -25,7 +23,6 @@ jobs:
           sudo pip3 install linode-cli
           linode-cli --version  # Verify installation
 
-      # Set up SSH
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
@@ -35,7 +32,6 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # SSH into the server and run docker-compose
       - name: Run Docker Compose on Linode
         run: |
           ssh -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
@@ -52,15 +48,13 @@ jobs:
     needs: setup
 
     steps:
-      # Install Linode CLI (if necessary)
       - name: Install Linode CLI
         run: |
           sudo apt-get update
           sudo pip3 install linode-cli
 
-      # Run Linode CLI command with the correct environment variable
       - name: Run Linode CLI command
         env:
-          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }} 
         run: |
           linode-cli linodes ls
