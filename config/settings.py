@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'ckeditor',
     "drf_yasg",
     
-
     'apps.competition',
     'apps.task',
     'apps.test_case',
@@ -122,29 +121,6 @@ DATABASES = {
 }
 
 
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs/django_debug.log'),
-#         },
-#         'error_file': {
-#             'level': 'ERROR',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs/django_error.log'),
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['file', 'error_file'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
 
 
 
