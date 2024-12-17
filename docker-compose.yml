@@ -8,9 +8,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ./logs:/gogrok/logs
       - .:/gogrok
       - /gogrok/staticfiles
-      - ./logs:/gogrok/logs
+      
 
     environment:
       - REDIS_URL=redis://redis:6379/1  # Docker service name
@@ -34,3 +35,4 @@ services:
 
 volumes:
   redis_data:
+  logs:
