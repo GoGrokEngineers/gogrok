@@ -1,10 +1,10 @@
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: gogrok-backend-app
+    image: gogrok-backend-app  # Explicitly set the image name
     ports:
       - "8000:8000"
     volumes:
