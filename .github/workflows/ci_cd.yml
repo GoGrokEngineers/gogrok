@@ -17,11 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python, pip, Docker, and Linode CLI
+      # Install Python and Linode CLI
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip docker.io
+          sudo apt-get install -y python3-pip
           sudo pip3 install linode-cli
           linode-cli --version  # Verify installation
 
