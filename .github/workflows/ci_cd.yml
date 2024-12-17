@@ -17,14 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python, pip, and Linode CLI
-      - name: Install Python, pip, and Linode CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          sudo pip3 install linode-cli
-          linode-cli --version  # Verify installation
-
       # Set up SSH
       - name: Set up SSH
         run: |
@@ -33,20 +25,42 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-  linode-verify:
+      # Set up Linode CLI (if needed)
+      - name: Install Python, pip, and Linode CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          sudo pip3 install linode-cli
+
+      # Configure Linode CLI
+      - name: Configure Linode CLI (Non-Interactive)
+        env:
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: |
+          mkdir -p ~/.config/linode-cli
+          echo "[DEFAULT]" > ~/.config/linode-cli/config
+          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
+
+  docker-build:
     runs-on: ubuntu-latest
     needs: setup
 
     steps:
-      # Install Linode CLI (if necessary)
-      - name: Install Linode CLI
-        run: |
-          sudo apt-get update
-          sudo pip3 install linode-cli
+      # Checkout the code again
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # Run Linode CLI command with the correct environment variable
-      - name: Run Linode CLI command
-        env:
-          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
+      # Build and start Docker Compose
+      - name: Build and start Docker Compose
         run: |
-          linode-cli linodes ls
+          docker-compose -f docker-compose.yml up --build -d
+
+      # Wait for containers to stabilize
+      - name: Wait for containers
+        run: |
+          sleep 20  # Adjust time based on your container startup time
+
+      # Tear down Docker containers (optional)
+      - name: Tear down Docker containers
+        run: |
+          docker-compose -f docker-compose.yml down
