@@ -17,6 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Install Python, pip, and Linode CLI
+      - name: Install Python, pip, and Linode CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install --user linode-cli
+          echo "$(which linode-cli)"
+          # Add user bin path to PATH
+          echo "PATH=$PATH:~/.local/bin" >> $GITHUB_ENV
+
       # Set up SSH for Lish access
       - name: Set up SSH for Lish access
         run: |
@@ -24,39 +34,18 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
-
-      # Configure Linode CLI (Non-Interactive)
-      - name: Configure Linode CLI (Non-Interactive)
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+          
+      # Debug SSH connection to Linode
+      - name: Debug SSH connection
         run: |
-          mkdir -p ~/.config/linode-cli
-          echo "[DEFAULT]" > ~/.config/linode-cli/config
-          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
+          ssh -v -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com echo "SSH connected successfully"
 
-  docker-build:
+  # Optional: Run Docker build and container
+  docker-setup:
     runs-on: ubuntu-latest
     needs: setup
-
     steps:
-      # Checkout the code again
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Build Docker image and run container using Lish SSH
-      - name: Build Docker image and run container remotely
+      - name: Build Docker image and run container
         run: |
-          ssh -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "
-            cd /root/gogrok && \
-            sudo docker build -t gogrok . && \
-            sudo docker run -d --name gogrok gogrok"
-        
-      # Wait for container to stabilize
-      - name: Wait for container
-        run: |
-          sleep 20  # Adjust time based on your container startup time
-
-      # Optional: Stop and remove the container
-      - name: Stop and remove container remotely
-        run: |
-          ssh -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "sudo docker stop gogrok && sudo docker rm gogrok"
+          docker build -t gogrok /root/gogrok
+          docker run --name gogrok -d gogrok
