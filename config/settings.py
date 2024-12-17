@@ -44,11 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_spectacular',
     'django_redis',
     'redis',
     'corsheaders',
     'ckeditor',
-    "drf_yasg",
     
     'apps.competition',
     'apps.task',
@@ -56,6 +56,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -64,6 +66,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000', 
+]
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -164,6 +174,12 @@ LOGGING = {
 }
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+
 
 
 # Password validation
@@ -196,9 +212,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+# URL that handles the media served from MEDIA_ROOT
+MEDIA_URL = '/media/'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
+# Path where uploaded media files are stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 
 STATIC_URL = 'static/'
 
