@@ -23,7 +23,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa your_server_ip >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa 139.162.134.90 >> ~/.ssh/known_hosts  # Replace with your server's IP
 
       # Configure Linode CLI (Non-Interactive)
       - name: Configure Linode CLI (Non-Interactive)
@@ -46,7 +46,7 @@ jobs:
       # Build Docker image and run container remotely
       - name: Build Docker image and run container remotely
         run: |
-          ssh -o StrictHostKeyChecking=no user@your_server_ip "
+          ssh -o StrictHostKeyChecking=no user@139.162.134.90 "
             cd /root/gogrok && \
             sudo docker build -t gogrok . && \
             sudo docker run -d --name gogrok gogrok"
@@ -59,4 +59,4 @@ jobs:
       # Optional: Stop and remove the container
       - name: Stop and remove container remotely
         run: |
-          ssh -o StrictHostKeyChecking=no user@your_server_ip "sudo docker stop gogrok && sudo docker rm gogrok"
+          ssh -o StrictHostKeyChecking=no user@139.162.134.90 "sudo docker stop gogrok && sudo docker rm gogrok"
