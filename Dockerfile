@@ -12,4 +12,4 @@ EXPOSE 8000
 ENV DJANGO_SETTINGS_MODULE=config.settings
 
 # Run Gunicorn as the entry point
-CMD ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["gunicorn", "--workers", "3", "--worker-class", "sync", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
