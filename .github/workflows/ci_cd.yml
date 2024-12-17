@@ -44,9 +44,9 @@ jobs:
           sudo apt-get update
           sudo pip3 install linode-cli
 
-      # Run Linode CLI command with Environment Variable
+      # Run Linode CLI command with the correct environment variable
       - name: Run Linode CLI command
         env:
-          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
         run: |
           linode-cli linodes ls
