@@ -35,16 +35,14 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # SSH into the server and build the Docker image and run the container
-      - name: Build and run Docker container on Linode
+      # SSH into the server and run docker-compose
+      - name: Run Docker Compose on Linode
         run: |
           ssh -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
             # Navigate to the /root/gogrok directory
             cd /root/gogrok
-            # Build the Docker image with the tag 'gogrok-backend-app'
-            docker build -t gogrok-backend-app .
-            # Run the container from the image (you can modify the ports as needed)
-            docker run -d --name gogrok-backend-container gogrok-backend-app
+            # Run Docker Compose to start the containers
+            docker-compose up -d
           EOF
 
   linode-verify:
