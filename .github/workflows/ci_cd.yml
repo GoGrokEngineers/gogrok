@@ -17,14 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Docker and Docker Compose
-      - name: Set up Docker
+      # Install Python, pip, and Linode CLI
+      - name: Install Python, pip, and Linode CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io docker-compose
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          sudo usermod -aG docker $USER
+          sudo apt-get install -y python3-pip
+          sudo pip3 install linode-cli
+          linode-cli --version  # Verify installation
 
       # Set up SSH
       - name: Set up SSH
@@ -34,56 +33,20 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # Set up Linode CLI (if needed)
-      - name: Install Python, pip, and Linode CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          sudo pip3 install linode-cli
-
-      # Configure Linode CLI
-      - name: Configure Linode CLI (Non-Interactive)
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: |
-          mkdir -p ~/.config/linode-cli
-          echo "[DEFAULT]" > ~/.config/linode-cli/config
-          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
-
-  docker-build:
+  linode-verify:
     runs-on: ubuntu-latest
     needs: setup
 
     steps:
-      # Checkout the code again
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up Docker and Docker Compose again (as separate job)
-      - name: Set up Docker
+      # Install Linode CLI (if necessary)
+      - name: Install Linode CLI
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker.io docker-compose
-          sudo systemctl start docker
-          sudo systemctl enable docker
-          sudo usermod -aG docker $USER
+          sudo pip3 install linode-cli
 
-      # Build and run Docker Compose
-      - name: Build and start Docker Compose
+      # Run Linode CLI command with the correct environment variable
+      - name: Run Linode CLI command
+        env:
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
         run: |
-          docker-compose -f docker-compose.yml up --build -d
-
-      # Wait for containers to stabilize
-      - name: Wait for containers
-        run: |
-          sleep 20  # Adjust time based on your container startup time
-
-      # Optionally, you can add tests or other commands here after the containers start
-      - name: Run tests or other tasks
-        run: |
-          docker exec -it <container_name> <test_command>  # Run any tests inside a container
-
-      # Tear down Docker containers (optional)
-      - name: Tear down Docker containers
-        run: |
-          docker-compose -f docker-compose.yml down
+          linode-cli linodes ls
