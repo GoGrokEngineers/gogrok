@@ -33,11 +33,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # Create Hello.txt file in /root/gogrok/
-      - name: Create Hello.txt file
+      # SSH into the server and create the Hello.txt file
+      - name: Create Hello.txt on Linode server
         run: |
-          sudo mkdir -p /root/gogrok
-          echo "Hello, world!" | sudo tee /root/gogrok/Hello.txt > /dev/null
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@139.162.134.90 "mkdir -p /root/gogrok && echo 'Hello, world!' > /root/gogrok/Hello.txt"
 
   linode-verify:
     runs-on: ubuntu-latest
