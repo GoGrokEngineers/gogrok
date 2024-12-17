@@ -54,4 +54,4 @@ jobs:
         env:
           LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
         run: |
-          linode-cli linodes ls
+          linode-cli linodes ls 
