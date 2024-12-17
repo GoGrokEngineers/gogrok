@@ -36,12 +36,12 @@ jobs:
           ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
           
       - name: Debug SSH connection (with more details)
-  run: |
-    mkdir -p ~/.ssh
-    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-    chmod 600 ~/.ssh/id_rsa
-    ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
-    ssh -v -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "echo SSH connected"
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
+          ssh -v -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "echo SSH connected"
 
 
   # Optional: Run Docker build and container
