@@ -22,8 +22,10 @@ services:
       mkdir -p /gogrok/logs &&
       python manage.py makemigrations &&
       python manage.py migrate &&
-      gunicorn --bind 0.0.0.0:8000 config.wsgi:application
+      gunicorn --bind 0.0.0.0:8000 config.wsgi:application --log-level debug
       "
+    mem_limit: 1g  # Increase memory limit to 1GB
+    mem_reservation: 512m  # Reserve 512MB of memory
 
   redis:
     image: redis:latest
