@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python, pip, and Linode CLI globally
+      # Install Python, pip, and Linode CLI
       - name: Install Python, pip, and Linode CLI
         run: |
           sudo apt-get update
@@ -33,8 +33,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # Configure Linode CLI (Non-Interactive)
-      - name: Configure Linode CLI (Non-Interactive)
+      # Configure Linode CLI using LINODE_TOKEN
+      - name: Configure Linode CLI
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: |
@@ -47,14 +47,21 @@ jobs:
     needs: setup
 
     steps:
-      # Install Linode CLI again if PATH issues persist
-      - name: Install Linode CLI (if necessary)
+      # Install Linode CLI
+      - name: Install Linode CLI
         run: |
           sudo apt-get update
           sudo pip3 install linode-cli
 
-      # Verify Linode CLI and Run Command
-      - name: Run Linode CLI command
+      # Configure Linode CLI using LINODE_TOKEN
+      - name: Configure Linode CLI
+        env:
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
         run: |
-          linode-cli --version
-          linode-cli linodes ls
+          mkdir -p ~/.config/linode-cli
+          echo "[DEFAULT]" > ~/.config/linode-cli/config
+          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
+
+      # Run Linode CLI command
+      - name: Run Linode CLI command
+        run: linode-cli linodes ls
