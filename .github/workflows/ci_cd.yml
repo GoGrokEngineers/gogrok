@@ -33,35 +33,20 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # Configure Linode CLI using LINODE_TOKEN
-      - name: Configure Linode CLI
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: |
-          mkdir -p ~/.config/linode-cli
-          echo "[DEFAULT]" > ~/.config/linode-cli/config
-          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
-
   linode-verify:
     runs-on: ubuntu-latest
     needs: setup
 
     steps:
-      # Install Linode CLI
+      # Install Linode CLI (if necessary)
       - name: Install Linode CLI
         run: |
           sudo apt-get update
           sudo pip3 install linode-cli
 
-      # Configure Linode CLI using LINODE_TOKEN
-      - name: Configure Linode CLI
-        env:
-          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-        run: |
-          mkdir -p ~/.config/linode-cli
-          echo "[DEFAULT]" > ~/.config/linode-cli/config
-          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
-
-      # Run Linode CLI command
+      # Run Linode CLI command with Environment Variable
       - name: Run Linode CLI command
-        run: linode-cli linodes ls
+        env:
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: |
+          linode-cli linodes ls
