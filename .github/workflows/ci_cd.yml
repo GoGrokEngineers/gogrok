@@ -22,34 +22,31 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip
-          pip3 install --user linode-cli
-          echo "$(which linode-cli)"
-          # Add user bin path to PATH
-          echo "PATH=$PATH:~/.local/bin" >> $GITHUB_ENV
+          sudo pip3 install linode-cli
+          linode-cli --version  # Verify installation
 
-      # Set up SSH for Lish access
-      - name: Set up SSH for Lish access
+      # Set up SSH
+      - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
-          
-      - name: Debug SSH connection (with more details)
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
-          ssh -v -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "echo SSH connected"
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-
-  # Optional: Run Docker build and container
-  docker-setup:
+  linode-verify:
     runs-on: ubuntu-latest
     needs: setup
+
     steps:
-      - name: Build Docker image and run container
+      # Install Linode CLI (if necessary)
+      - name: Install Linode CLI
         run: |
-          docker build -t gogrok /root/gogrok
-          docker run --name gogrok -d gogrok
+          sudo apt-get update
+          sudo pip3 install linode-cli
+
+      # Run Linode CLI command with the correct environment variable
+      - name: Run Linode CLI command
+        env:
+          LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
+        run: |
+          linode-cli linodes ls
