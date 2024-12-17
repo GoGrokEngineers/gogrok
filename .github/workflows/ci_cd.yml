@@ -41,6 +41,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
             # Navigate to the /root/gogrok directory
             cd /root/gogrok
+            # Pull changes
+            git pull origin main
             # Run Docker Compose to start the containers
             docker-compose up -d
           EOF
