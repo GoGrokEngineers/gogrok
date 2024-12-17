@@ -10,12 +10,14 @@ services:
     volumes:
       - .:/gogrok
       - /gogrok/staticfiles
+
     environment:
       - REDIS_URL=redis://redis:6379/1  # Docker service name
     depends_on:
       - redis
     command: >
       sh -c "
+      mkdir -p /gogrok/logs &&
       python manage.py makemigrations &&
       python manage.py migrate &&
       gunicorn --bind 0.0.0.0:8000 config.wsgi:application
