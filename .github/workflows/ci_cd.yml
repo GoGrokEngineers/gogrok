@@ -17,13 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up SSH to your server
-      - name: Set up SSH
+      # Set up SSH for Lish access
+      - name: Set up SSH for Lish access
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa 139.162.134.90 >> ~/.ssh/known_hosts  # Replace with your server's IP
+          ssh-keyscan -t rsa lish-eu-central.linode.com >> ~/.ssh/known_hosts  # Lish domain
 
       # Configure Linode CLI (Non-Interactive)
       - name: Configure Linode CLI (Non-Interactive)
@@ -43,10 +43,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Build Docker image and run container remotely
+      # Build Docker image and run container using Lish SSH
       - name: Build Docker image and run container remotely
         run: |
-          ssh -o StrictHostKeyChecking=no user@139.162.134.90 "
+          ssh -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "
             cd /root/gogrok && \
             sudo docker build -t gogrok . && \
             sudo docker run -d --name gogrok gogrok"
@@ -59,4 +59,4 @@ jobs:
       # Optional: Stop and remove the container
       - name: Stop and remove container remotely
         run: |
-          ssh -o StrictHostKeyChecking=no root@139.162.134.90 "sudo docker stop gogrok && sudo docker rm gogrok"
+          ssh -o StrictHostKeyChecking=no feruzbek23@lish-eu-central.linode.com "sudo docker stop gogrok && sudo docker rm gogrok"
