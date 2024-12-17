@@ -12,16 +12,20 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+# from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_URL = '/media/'  # URL for accessing media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path where media files will be stored
 
+# load_dotenv() 
+# SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+# DEBUG = os.getenv('DEBUG') == 'True'
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+
+SECRET_KEY = "django-insecure-07-hd3b$s!82$(w^j3@qu%p#zm(p^0vpi2da_d!1ioi%8u78s&"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-07-hd3b$s!82$(w^j3@qu%p#zm(p^0vpi2da_d!1ioi%8u78s&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,26 +44,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'drf_spectacular',
     'django_redis',
     'redis',
     'corsheaders',
     'ckeditor',
- 
+    "drf_yasg",
     
-
     'apps.competition',
     'apps.task',
     'apps.test_case',
 ]
-REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware", 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,13 +64,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
-]
-
-CORS_ALLOW_ALL_ORIGINS = True
-
 
 ROOT_URLCONF = 'config.urls'
 
@@ -131,6 +120,51 @@ DATABASES = {
     }
 }
 
+import os
+
+# Define log file paths
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'django_errors.log'),
+            'formatter': 'verbose',
+        },
+        'access_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'django_access.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'access_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -166,17 +200,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]

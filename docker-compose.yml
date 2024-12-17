@@ -1,14 +1,15 @@
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: gogrok_app
+    container_name: gogrok-backend-app
+    image: gogrok-backend-app  # Explicitly set the image name
     ports:
       - "8000:8000"
     volumes:
       - .:/gogrok
+      - /gogrok/staticfiles
     environment:
       - REDIS_URL=redis://redis:6379/1  # Docker service name
     depends_on:
