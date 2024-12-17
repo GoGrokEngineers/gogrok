@@ -33,6 +33,12 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
+      # Create Hello.txt file in /root/gogrok/
+      - name: Create Hello.txt file
+        run: |
+          sudo mkdir -p /root/gogrok
+          echo "Hello, world!" | sudo tee /root/gogrok/Hello.txt > /dev/null
+
   linode-verify:
     runs-on: ubuntu-latest
     needs: setup
