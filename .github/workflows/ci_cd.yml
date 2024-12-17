@@ -17,22 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up SSH
+      # Set up SSH to your server
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          ssh-keyscan -t rsa your_server_ip >> ~/.ssh/known_hosts
 
-      # Set up Linode CLI (if needed)
-      - name: Install Python, pip, and Linode CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          sudo pip3 install linode-cli
-
-      # Configure Linode CLI
+      # Configure Linode CLI (Non-Interactive)
       - name: Configure Linode CLI (Non-Interactive)
         env:
           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
@@ -50,24 +43,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Docker Compose
-      - name: Install Docker Compose
+      # Build Docker image and run container remotely
+      - name: Build Docker image and run container remotely
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-      # Build and start Docker Compose
-      - name: Build and start Docker Compose
-        run: |
-          docker-compose 
-
-      # Wait for containers to stabilize
-      - name: Wait for containers
+          ssh -o StrictHostKeyChecking=no user@your_server_ip "
+            cd /root/gogrok && \
+            sudo docker build -t gogrok . && \
+            sudo docker run -d --name gogrok gogrok"
+        
+      # Wait for container to stabilize
+      - name: Wait for container
         run: |
           sleep 20  # Adjust time based on your container startup time
 
-      # Tear down Docker containers (optional)
-      - name: Tear down Docker containers
+      # Optional: Stop and remove the container
+      - name: Stop and remove container remotely
         run: |
-          docker-compose -f docker-compose.yml down
+          ssh -o StrictHostKeyChecking=no user@your_server_ip "sudo docker stop gogrok && sudo docker rm gogrok"
