@@ -23,10 +23,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install --user linode-cli
-          echo "$(which linode-cli)"
-          # Add user bin path to PATH
-          echo "PATH=$PATH:~/.local/bin" >> $GITHUB_ENV
-      
+          
+          # Add ~/.local/bin to PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          
+          # Verify linode-cli installation
+          linode-cli --version
+
       # Set up SSH
       - name: Set up SSH
         run: |
@@ -48,5 +51,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
+      # Add ~/.local/bin to PATH in this job too
+      - name: Add linode-cli to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      # Run Linode CLI command
       - name: Run Linode CLI command
         run: linode-cli linodes ls
