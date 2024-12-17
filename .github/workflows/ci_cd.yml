@@ -17,11 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install Python, pip, and Linode CLI
-      - name: Install Python, pip, and Linode CLI
+      # Install Python, pip, Docker, and Linode CLI
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip
+          sudo apt-get install -y python3-pip docker.io
           sudo pip3 install linode-cli
           linode-cli --version  # Verify installation
 
@@ -31,12 +31,21 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      # SSH into the server and create the Hello.txt file
-      - name: Create Hello.txt on Linode server
+      # SSH into the server and build the Docker image and run the container
+      - name: Build and run Docker container on Linode
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@139.162.134.90 "mkdir -p /root/gogrok && echo 'Hello, world!' > /root/gogrok/Hello.txt"
+          ssh -o StrictHostKeyChecking=no root@139.162.134.90 << 'EOF'
+            # Navigate to the /root/gogrok directory
+            cd /root/gogrok
+            # Build the Docker image with the tag 'gogrok-backend-app'
+            docker build -t gogrok-backend-app .
+            # Run the container from the image (you can modify the ports as needed)
+            docker run -d --name gogrok-backend-container gogrok-backend-app
+          EOF
 
   linode-verify:
     runs-on: ubuntu-latest
@@ -54,4 +63,4 @@ jobs:
         env:
           LINODE_CLI_TOKEN: ${{ secrets.LINODE_TOKEN }}  # Linode Personal Access Token
         run: |
-          linode-cli linodes ls 
+          linode-cli linodes ls
