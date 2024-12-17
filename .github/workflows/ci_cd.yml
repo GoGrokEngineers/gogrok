@@ -1,52 +1,52 @@
-# name: CI/CD Pipeline
+name: CI/CD Pipeline
 
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   setup:
-#     runs-on: ubuntu-latest
+jobs:
+  setup:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       # Checkout the code
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-#       # Install Python, pip, and Linode CLI
-#       - name: Install Python, pip, and Linode CLI
-#         run: |
-#           sudo apt-get update
-#           sudo apt-get install -y python3-pip
-#           pip3 install --user linode-cli
-#           echo "$(which linode-cli)"
-#           # Add user bin path to PATH
-#           echo "PATH=$PATH:~/.local/bin" >> $GITHUB_ENV
+      # Install Python, pip, and Linode CLI
+      - name: Install Python, pip, and Linode CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install --user linode-cli
+          echo "$(which linode-cli)"
+          # Add user bin path to PATH
+          echo "PATH=$PATH:~/.local/bin" >> $GITHUB_ENV
       
-#       # Set up SSH
-#       - name: Set up SSH
-#         run: |
-#           mkdir -p ~/.ssh
-#           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-#           chmod 600 ~/.ssh/id_rsa
-#           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      # Set up SSH
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-#       # Configure Linode CLI (Non-Interactive)
-#       - name: Configure Linode CLI (Non-Interactive)
-#         env:
-#           LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
-#         run: |
-#           mkdir -p ~/.config/linode-cli
-#           echo "[DEFAULT]" > ~/.config/linode-cli/config
-#           echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
+      # Configure Linode CLI (Non-Interactive)
+      - name: Configure Linode CLI (Non-Interactive)
+        env:
+          LINODE_TOKEN: ${{ secrets.LINODE_TOKEN }}
+        run: |
+          mkdir -p ~/.config/linode-cli
+          echo "[DEFAULT]" > ~/.config/linode-cli/config
+          echo "token = $LINODE_TOKEN" >> ~/.config/linode-cli/config
 
-#   linode-verify:
-#     runs-on: ubuntu-latest
-#     needs: setup
-#     steps:
-#       - name: Run Linode CLI command
-#         run: linode-cli linodes ls
+  linode-verify:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Run Linode CLI command
+        run: linode-cli linodes ls
