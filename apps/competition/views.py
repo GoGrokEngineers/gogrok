@@ -38,30 +38,30 @@ def get_competition_data(comp_uid):
         )
     return competition_data, None
 
+# Declarating every competition to today's statistics
+def declare_comeptition_to_statistics(task):
+    today = date.today()
+    statistics, created = CompetitionStatisticsModel.objects.get_or_create(date=today)
+    statistics.total_competitions += 1
+    statistics.tasks.add(task)
+    statistics.save()
+
 
 async def set_cache_data(comp_uid, competition_data):
     duration = competition_data.get("duration", 0) * 60  # Convert to seconds
     cache.set(comp_uid, competition_data, timeout=duration)
 
 
-
 class CompetitionCreateView(APIView):
     def get(self, request):
-        competition_keys = cache.keys("*")
-        competitions_data = [
-            cache.get(comp_uid) for comp_uid in competition_keys if cache.get(comp_uid)
-        ]
-        serialized_data = CompetitionValidateSerializer(
-            competitions_data, many=True
-        ).data
-        return Response(
-            {
-                "success": True,
-                "competitions": serialized_data,
-                "message": "Competitions retrieved successfully.",
-            },
-            status=status.HTTP_200_OK,
-        )
+        today = date.today()
+        statistics, _ = CompetitionStatisticsModel.objects.get_or_create(date=today)
+        data = {
+            "date": statistics.date,
+            "tasks": list(statistics.tasks.values("id", "title")),
+            "total_competitions": statistics.total_competitions,
+        }
+        return Response(data)
 
     async def post(self, request):
         serializer = CompetitionValidateSerializer(data=request.data)
@@ -104,6 +104,7 @@ class CompetitionCreateView(APIView):
         task_data = await asyncio.to_thread(self._prepare_task_data, task)
 
         await cache_task
+        asyncio.to_thread(declare_comeptition_to_statistics(task))
 
         return Response(
             data={
