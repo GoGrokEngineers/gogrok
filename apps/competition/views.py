@@ -9,6 +9,9 @@ from apps.competition.utils.generators import generator_uid
 from apps.competition.utils.evaluate_code import evaluate_code
 from apps.competition.utils.generate_function_name import generate_function_name
 
+import asyncio
+
+
 from .serializers import (
     CompetitionJoinSerializer,
     CompetitionValidateSerializer,
@@ -27,7 +30,7 @@ def get_competition_data(comp_uid):
     return competition_data, None
 
 
-def set_cache_data(comp_uid, competition_data):
+async def set_cache_data(comp_uid, competition_data):
     duration = competition_data.get("duration", 0) * 60  # Convert to seconds
     cache.set(comp_uid, competition_data, timeout=duration)
 
@@ -50,7 +53,7 @@ class CompetitionCreateView(APIView):
             status=status.HTTP_200_OK,
         )
 
-    def post(self, request):
+    async def post(self, request):
         serializer = CompetitionValidateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(
@@ -59,23 +62,25 @@ class CompetitionCreateView(APIView):
             )
 
         difficulty = serializer.validated_data.get("difficulty")
-        # task = Task.objects.get(title="Missing Number")
-      
-        task = get_random(difficulty=difficulty)
+
+        random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
+        uid_generation_coro = asyncio.to_thread(generator_uid)
+
+        task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
+
         if not task:
             return Response(
                 {"success": False, "message": "No task available for the specified difficulty."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        comp_uid = str(generator_uid())
         if cache.get(comp_uid):
             return Response(
                 {"success": False, "message": "Please regenerate again!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        function_name = generate_function_name(task)
 
+        function_name = generate_function_name(task)
         comp_data = {
             "competition_uid": comp_uid,
             **serializer.validated_data,
@@ -84,19 +89,14 @@ class CompetitionCreateView(APIView):
             "created_at": timezone.now(),
             "results": [],
         }
-        set_cache_data(comp_uid, comp_data)
 
-        task_data = {
-            "id": task.id,
-            "title": task.title,
-            "difficulty": task.difficulty,
-            "description": task.description,
-            "test_cases": task.test_cases.all().values(
-                "input", "output", "input_type", "output_type"
-            ),
-        }
+        cache_task = asyncio.create_task(set_cache_data(comp_uid, comp_data))
+        task_data = await asyncio.to_thread(self._prepare_task_data, task)
+
+        await cache_task
+
         return Response(
-            {
+            data={
                 "success": True,
                 "competition_uid": comp_uid,
                 "task": task_data,
@@ -105,6 +105,20 @@ class CompetitionCreateView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+    def _prepare_task_data(self, task):
+        """
+        Synchronous helper method to prepare task data.
+        """
+        return {
+            "id": task.id,
+            "title": task.title,
+            "difficulty": task.difficulty,
+            "description": task.description,
+            "test_cases": task.test_cases.all().values(
+                "input", "output", "input_type", "output_type"
+            ),
+        }
         
 
 class JoinCompetitionView(APIView):
