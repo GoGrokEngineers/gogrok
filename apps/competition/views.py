@@ -3,6 +3,8 @@ from django.core.cache import cache
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from celery import shared_task
+from datetime import date
 
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
@@ -10,14 +12,21 @@ from apps.competition.utils.evaluate_code import evaluate_code
 from apps.competition.utils.generate_function_name import generate_function_name
 
 import asyncio
-
-
+from .models import CompetitionStatisticsModel
 from .serializers import (
     CompetitionJoinSerializer,
     CompetitionValidateSerializer,
     SubmitCodeSerializer,
 )
 from apps.task.models import Task
+
+
+# Declare default data about today's comeptitions
+@shared_task() 
+def create_daily_statistics():
+    today = date.today()
+    if not CompetitionStatisticsModel.objects.filter(date=today).exists():
+        CompetitionStatisticsModel.objects.create()
 
 # Utility functions for common operations
 def get_competition_data(comp_uid):
@@ -33,6 +42,7 @@ def get_competition_data(comp_uid):
 async def set_cache_data(comp_uid, competition_data):
     duration = competition_data.get("duration", 0) * 60  # Convert to seconds
     cache.set(comp_uid, competition_data, timeout=duration)
+
 
 
 class CompetitionCreateView(APIView):
