@@ -52,7 +52,7 @@ async def set_cache_data(comp_uid, competition_data):
     cache.set(comp_uid, competition_data, timeout=duration)
 
 
-class CompetitionCreateView(APIView):
+class CompetitionAPIView(APIView):
     def get(self, request):
         today = date.today()
         statistics, _ = CompetitionStatisticsModel.objects.get_or_create(date=today)
