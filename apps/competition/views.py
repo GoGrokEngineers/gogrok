@@ -53,9 +53,11 @@ async def set_cache_data(comp_uid, competition_data):
 
 
 class CompetitionAPIView(APIView):
-    def get(self, request):
+    async def get(self, request):
         today = date.today()
-        statistics, _ = CompetitionStatisticsModel.objects.get_or_create(date=today)
+        statistics, _ = await asyncio.to_thread(
+            CompetitionStatisticsModel.objects.get_or_create, date=today
+        )
         data = {
             "date": statistics.date,
             "tasks": list(statistics.tasks.values("id", "title")),
@@ -130,6 +132,7 @@ class CompetitionAPIView(APIView):
                 "input", "output", "input_type", "output_type"
             ),
         }
+
         
 
 class JoinCompetitionView(APIView):
