@@ -75,11 +75,9 @@ class CompetitionAPIView(APIView):
 
         difficulty = serializer.validated_data.get("difficulty")
 
-        # Asynchronously run these tasks
         random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
         uid_generation_coro = asyncio.to_thread(generator_uid)
 
-        # Await both coroutines
         task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
 
         if not task:
