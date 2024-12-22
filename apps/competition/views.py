@@ -75,9 +75,11 @@ class CompetitionAPIView(APIView):
 
         difficulty = serializer.validated_data.get("difficulty")
 
+        # Asynchronously run these tasks
         random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
         uid_generation_coro = asyncio.to_thread(generator_uid)
 
+        # Await both coroutines
         task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
 
         if not task:
@@ -106,7 +108,8 @@ class CompetitionAPIView(APIView):
         task_data = await asyncio.to_thread(self._prepare_task_data, task)
 
         await cache_task
-        asyncio.to_thread(declare_comeptition_to_statistics(task))
+
+        await asyncio.to_thread(declare_comeptition_to_statistics, task)
 
         return Response(
             data={
