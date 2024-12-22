@@ -3,6 +3,7 @@ from django.core.cache import cache
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.views import AsyncAPIView
 from celery import shared_task
 from datetime import date
 
@@ -52,7 +53,7 @@ async def set_cache_data(comp_uid, competition_data):
     cache.set(comp_uid, competition_data, timeout=duration)
 
 
-class CompetitionAPIView(APIView):
+class CompetitionAPIView(AsyncAPIView):
     async def get(self, request):
         today = date.today()
         statistics, _ = await asyncio.to_thread(
