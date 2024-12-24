@@ -16,7 +16,7 @@ from apps.competition.utils.evaluate_code import evaluate_code
 from apps.competition.utils.generate_function_name import generate_function_name
 
 import asyncio
-from .models import CompetitionStatisticsModel
+from apps.competition.models import CompetitionStatisticsModel
 from .serializers import (
     CompetitionJoinSerializer,
     CompetitionValidateSerializer,
@@ -47,7 +47,7 @@ def declare_comeptition_to_statistics(task):
     today = date.today()
     statistics, created = CompetitionStatisticsModel.objects.get_or_create(date=today)
     statistics.total_competitions += 1
-    statistics.tasks.add(task)
+    # statistics.tasks.add(task)
     statistics.save()
 
 
@@ -64,7 +64,7 @@ class CompetitionAPIView(View):
         )
         data = {
             "date": statistics.date,
-            "tasks": list(statistics.tasks.values("id", "title")),
+            # "tasks": list(statistics.tasks.values("id", "title")),
             "total_competitions": statistics.total_competitions,
         }
         return Response(data)
