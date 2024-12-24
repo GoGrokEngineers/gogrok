@@ -144,10 +144,11 @@ class CompetitionAPIView(View):
             "title": task.title,
             "difficulty": task.difficulty,
             "description": task.description,
-            "test_cases": task.test_cases.all().values(
+            "test_cases": list(task.test_cases.all().values(
                 "input", "output", "input_type", "output_type"
-            ),
+            )),
         }
+
 
         
 
