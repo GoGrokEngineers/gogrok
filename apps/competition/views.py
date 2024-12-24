@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.utils import timezone
 from django.core.cache import cache
 from rest_framework import status
@@ -67,7 +68,7 @@ class CompetitionAPIView(View):
             # "tasks": list(statistics.tasks.values("id", "title")),
             "total_competitions": statistics.total_competitions,
         }
-        return Response(data=data, status=status.HTTP_200_OK)
+        return JsonResponse(data, status=200)
 
     async def post(self, request):
         serializer = CompetitionValidateSerializer(data=request.data)
@@ -113,15 +114,15 @@ class CompetitionAPIView(View):
 
         await asyncio.to_thread(declare_comeptition_to_statistics, task)
 
-        return Response(
-            data={
+        return JsonResponse(
+            {
                 "success": True,
                 "competition_uid": comp_uid,
                 "task": task_data,
                 "function_name": function_name,
                 "message": "Competition created successfully.",
             },
-            status=status.HTTP_201_CREATED,
+            status=201,
         )
 
     def _prepare_task_data(self, task):
