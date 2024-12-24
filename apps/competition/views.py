@@ -67,7 +67,7 @@ class CompetitionAPIView(View):
             # "tasks": list(statistics.tasks.values("id", "title")),
             "total_competitions": statistics.total_competitions,
         }
-        return Response(data)
+        return Response(data=data, status=status.HTTP_200_OK)
 
     async def post(self, request):
         serializer = CompetitionValidateSerializer(data=request.data)
