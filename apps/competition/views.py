@@ -54,7 +54,7 @@ def declare_comeptition_to_statistics(task):
 
 
 async def set_cache_data(comp_uid, competition_data):
-    duration = competition_data.get("duration", 0) * 60  # Convert to seconds
+    duration = (competition_data.get("duration", 0) + 5) * 60  # Convert to seconds
     cache.set(comp_uid, competition_data, timeout=duration)
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -112,6 +112,7 @@ class CompetitionAPIView(View):
             **serializer.validated_data,
             "task_title": task.title,
             "function_name": function_name,
+            "is_started": False,
             "created_at": timezone.now(),
             "results": [],
         }
@@ -148,10 +149,7 @@ class CompetitionAPIView(View):
                 "input", "output", "input_type", "output_type"
             )),
         }
-
-
         
-
 class JoinCompetitionView(APIView):
     def post(self, request):
         serializer = CompetitionJoinSerializer(data=request.data)
