@@ -71,11 +71,19 @@ class CompetitionAPIView(View):
         return JsonResponse(data, status=200)
 
     async def post(self, request):
-        serializer = CompetitionValidateSerializer(data=request.data)
+        try:
+            body = json.loads(request.body)  # Parse JSON body
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON."},
+                status=400,
+            )
+
+        serializer = CompetitionValidateSerializer(data=body)
         if not serializer.is_valid():
-            return Response(
+            return JsonResponse(
                 {"success": False, "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
 
         difficulty = serializer.validated_data.get("difficulty")
@@ -86,15 +94,15 @@ class CompetitionAPIView(View):
         task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
 
         if not task:
-            return Response(
+            return JsonResponse(
                 {"success": False, "message": "No task available for the specified difficulty."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=404,
             )
 
         if cache.get(comp_uid):
-            return Response(
+            return JsonResponse(
                 {"success": False, "message": "Please regenerate again!"},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
 
         function_name = generate_function_name(task)
@@ -124,6 +132,7 @@ class CompetitionAPIView(View):
             },
             status=201,
         )
+
 
     def _prepare_task_data(self, task):
         """
