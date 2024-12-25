@@ -1,9 +1,6 @@
 from django.urls import path
 from .views import CompetitionAPIView, JoinCompetitionView, SubmitCodeView, StatisticsAPIView
 
-
-
-#work
 urlpatterns = [
     path('', CompetitionAPIView.as_view(), name='create-get-competition'),
     path('join/', JoinCompetitionView.as_view(), name='join-competition'),
