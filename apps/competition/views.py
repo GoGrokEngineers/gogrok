@@ -72,8 +72,6 @@ class CompetitionAPIView(View):
             statistics[str(statistics_by_day.date)] = {
              "total_competitions": statistics_by_day.total_competitions
             }
-        
-        
         data = {
             "today": {
                 "date": statistics_today.date,
