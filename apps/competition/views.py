@@ -61,24 +61,25 @@ async def set_cache_data(comp_uid, competition_data):
 class CompetitionAPIView(View):
     async def get(self, request):
         today = date.today()
+        # Get or create statistics for today
         statistics_today, _ = await asyncio.to_thread(
             CompetitionStatisticsModel.objects.get_or_create, date=today
         )
-        statistics_all, _ = await asyncio.to_thread(
-            CompetitionStatisticsModel.objects.all()
-        )
-        statistics = {}
-        for statistics_by_day in range(len(statistics_all)):
-            statistics[str(statistics_by_day.date)] = {
-             "total_competitions": statistics_by_day.total_competitions
+        statistics_all = await asyncio.to_thread(CompetitionStatisticsModel.objects.all)
+
+        statistics = {
+            str(stat.date): {
+                "total_competitions": stat.total_competitions
             }
+            for stat in statistics_all
+        }
+
         data = {
             "today": {
                 "date": statistics_today.date,
-                # "tasks": list(statistics.tasks.values("id", "title")),
                 "total_competitions": statistics_today.total_competitions,
             },
-            "all_time": statistics
+            "all_time": statistics,
         }
         return JsonResponse(data, status=200)
 
