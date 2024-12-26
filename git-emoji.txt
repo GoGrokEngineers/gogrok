@@ -6,3 +6,23 @@
 ✅: Add, update, or pass tests.
 🚨: Fix compiler / linter warnings.
 ♻️: Refactor code.
+🎨: Improve structure / format of the code.
+➕: dd a dependency
+
+<type>(<scope>): <short description>
+
+[Optional body, explaining why or how changes were made, if necessary]
+
+[Optional footer, referencing any issues/tickets]
+
+types = [feat, fix, refactor, docs, style, test, ci]
+scopes = [auth, serializer, api, url, model, db, deploy]
+short description = a brief explanation of the changes
+
+
+Example:
+feat(auth): add JWT authentication support
+
+Implemented JWT authentication for user login and registration.
+- Created JWT token generation and validation logic.
+- Updated user model to handle authentication tokens.

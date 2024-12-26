@@ -1,20 +1,38 @@
+from django.http import JsonResponse
 from django.utils import timezone
 from django.core.cache import cache
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views import View
+import json 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+from celery import shared_task
+from datetime import date
 
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
 from apps.competition.utils.evaluate_code import evaluate_code
 from apps.competition.utils.generate_function_name import generate_function_name
 
+import asyncio
+from apps.competition.models import CompetitionStatisticsModel
 from .serializers import (
     CompetitionJoinSerializer,
     CompetitionValidateSerializer,
     SubmitCodeSerializer,
 )
 from apps.task.models import Task
+
+
+# Declare default data about today's comeptitions
+@shared_task() 
+def create_daily_statistics():
+    today = date.today()
+    if not CompetitionStatisticsModel.objects.filter(date=today).exists():
+        CompetitionStatisticsModel.objects.create()
 
 # Utility functions for common operations
 def get_competition_data(comp_uid):
@@ -26,76 +44,107 @@ def get_competition_data(comp_uid):
         )
     return competition_data, None
 
+# Declarating every competition to today's statistics
+def declare_comeptition_to_statistics(task):
+    today = date.today()
+    statistics, created = CompetitionStatisticsModel.objects.get_or_create(date=today)
+    statistics.total_competitions += 1
+    # statistics.tasks.add(task)
+    statistics.save()
 
-def set_cache_data(comp_uid, competition_data):
-    duration = competition_data.get("duration", 0) * 60  # Convert to seconds
+
+async def set_cache_data(comp_uid, competition_data):
+    duration = (competition_data.get("duration", 0) + 5) * 60  # Convert to seconds
     cache.set(comp_uid, competition_data, timeout=duration)
 
+@method_decorator(csrf_exempt, name='dispatch')
+class CompetitionAPIView(View):
+    async def get(self, request):
+        today = date.today()
 
-class CompetitionCreateView(APIView):
-    def get(self, request):
-        competition_keys = cache.keys("*")
-        competitions_data = [
-            cache.get(comp_uid) for comp_uid in competition_keys if cache.get(comp_uid)
-        ]
-        serialized_data = CompetitionValidateSerializer(
-            competitions_data, many=True
-        ).data
-        return Response(
-            {
-                "success": True,
-                "competitions": serialized_data,
-                "message": "Competitions retrieved successfully.",
-            },
-            status=status.HTTP_200_OK,
+        # Fetch or create statistics for today
+        statistics_today, _ = await asyncio.to_thread(
+            CompetitionStatisticsModel.objects.get_or_create, date=today
         )
 
-    def post(self, request):
-        serializer = CompetitionValidateSerializer(data=request.data)
+        # Fetch all statistics asynchronously
+        statistics_all = await asyncio.to_thread(
+            list, CompetitionStatisticsModel.objects.all()
+        )
+
+        # Prepare statistics for all time
+        statistics = {
+            str(stat.date): {
+                "total_competitions": stat.total_competitions
+            }
+            for stat in statistics_all
+        }
+
+        # Prepare response data
+        data = {
+            "today": {
+                "date": statistics_today.date,
+                "total_competitions": statistics_today.total_competitions,
+            },
+            "all_time": statistics,
+        }
+
+        return JsonResponse(data, status=200)
+
+    async def post(self, request):
+        try:
+            body = json.loads(request.body)  # Parse JSON body
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "message": "Invalid JSON."},
+                status=400,
+            )
+
+        serializer = CompetitionValidateSerializer(data=body)
         if not serializer.is_valid():
-            return Response(
+            return JsonResponse(
                 {"success": False, "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
 
         difficulty = serializer.validated_data.get("difficulty")
-        # task = Task.objects.get(title="Missing Number")
-      
-        task = get_random(difficulty=difficulty)
+
+        random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
+        uid_generation_coro = asyncio.to_thread(generator_uid)
+
+        task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
+
         if not task:
-            return Response(
+            return JsonResponse(
                 {"success": False, "message": "No task available for the specified difficulty."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=404,
             )
 
-        comp_uid = str(generator_uid())
         if cache.get(comp_uid):
-            return Response(
+            return JsonResponse(
                 {"success": False, "message": "Please regenerate again!"},
-                status=status.HTTP_400_BAD_REQUEST,
+                status=400,
             )
-        function_name = generate_function_name(task)
 
+        function_name = generate_function_name(task)
         comp_data = {
             "competition_uid": comp_uid,
             **serializer.validated_data,
             "task_title": task.title,
             "function_name": function_name,
+            "is_started": False,
             "created_at": timezone.now(),
             "results": [],
         }
-        set_cache_data(comp_uid, comp_data)
 
-        task_data = {
-            "id": task.id,
-            "title": task.title,
-            "difficulty": task.difficulty,
-            "description": task.description,
-            "test_cases": task.test_cases.all().values(
-                "input", "output", "input_type", "output_type"
-            ),
-        }
-        return Response(
+        cache_task = asyncio.create_task(set_cache_data(comp_uid, comp_data))
+        task_data = await asyncio.to_thread(self._prepare_task_data, task)
+
+        await cache_task
+
+        await asyncio.to_thread(declare_comeptition_to_statistics, task)
+
+        return JsonResponse(
             {
                 "success": True,
                 "competition_uid": comp_uid,
@@ -103,10 +152,24 @@ class CompetitionCreateView(APIView):
                 "function_name": function_name,
                 "message": "Competition created successfully.",
             },
-            status=status.HTTP_201_CREATED,
+            status=201,
         )
-        
 
+
+    def _prepare_task_data(self, task):
+        """
+        Synchronous helper method to prepare task data.
+        """
+        return {
+            "id": task.id,
+            "title": task.title,
+            "difficulty": task.difficulty,
+            "description": task.description,
+            "test_cases": list(task.test_cases.all().values(
+                "input", "output", "input_type", "output_type"
+            )),
+        }
+        
 class JoinCompetitionView(APIView):
     def post(self, request):
         serializer = CompetitionJoinSerializer(data=request.data)

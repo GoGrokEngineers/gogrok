@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   app:
     build:
@@ -8,15 +10,13 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./logs:/gogrok/logs
-      - .:/gogrok
-      - /gogrok/staticfiles
-      
-
+      - ./logs:/gogrok/logs  # Ensure logs are persisted outside the container
+      - .:/gogrok  # Mount the current project directory
+      - ./staticfiles:/gogrok/staticfiles  # Persist static files outside the container
     environment:
-      - REDIS_URL=redis://redis:6379/1  # Docker service name
+      - REDIS_URL=redis://redis:6379/1  # Docker service name for Redis
     depends_on:
-      - redis
+      - redis  # Ensure Redis is up before the app starts
     command: >
       sh -c "
       mkdir -p /gogrok/logs &&
@@ -24,17 +24,18 @@ services:
       python manage.py migrate &&
       gunicorn --bind 0.0.0.0:8000 config.wsgi:application --log-level debug
       "
-    mem_limit: 1g  # Increase memory limit to 1GB
-    mem_reservation: 512m  # Reserve 512MB of memory
+    mem_limit: 1g  # Limit memory usage to 1GB
+    mem_reservation: 512m  # Reserve 512MB memory for the app
 
   redis:
     image: redis:latest
     container_name: redis
     ports:
-      - "6379:6379"
+      - "6379:6379"  # Expose Redis port
     volumes:
-      - redis_data:/data
+      - redis_data:/data  # Persist Redis data
 
 volumes:
-  redis_data:
-  logs:
+  redis_data:  # Volume for Redis data
+  logs:  # Volume for application logs
+  staticfiles:  # Volume for static files

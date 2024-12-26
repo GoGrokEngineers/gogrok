@@ -15,15 +15,9 @@ class CompetitionValidateSerializer(serializers.Serializer):
     results = serializers.ListField(read_only=True)
 
     def create(self, validated_data):
-        """
-        Placeholder for create functionality if needed in the future.
-        """
         return validated_data
 
     def update(self, instance, validated_data):
-        """
-        Placeholder for update functionality if needed in the future.
-        """
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         return instance
@@ -37,15 +31,9 @@ class CompetitionJoinSerializer(serializers.Serializer):
     nickname = serializers.CharField(max_length=25)
 
     def create(self, validated_data):
-        """
-        Placeholder for create functionality if needed in the future.
-        """
         return validated_data
 
     def update(self, instance, validated_data):
-        """
-        Placeholder for update functionality if needed in the future.
-        """
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         return instance
@@ -60,15 +48,9 @@ class SubmitCodeSerializer(serializers.Serializer):
     code = serializers.JSONField()
 
     def create(self, validated_data):
-        """
-        Placeholder for create functionality if needed in the future.
-        """
         return validated_data
 
     def update(self, instance, validated_data):
-        """
-        Placeholder for update functionality if needed in the future.
-        """
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         return instance
