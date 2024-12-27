@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'redis',
     'corsheaders',
     'ckeditor',
+    'channels',
     
     'apps.competition',
     'apps.task',
