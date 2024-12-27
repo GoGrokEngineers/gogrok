@@ -5,10 +5,12 @@ Feruzbek:
         Code(syntax) Formatter(code evalution)✅
         Test-cases(JSONFILED research)✅
 
-        Setup ssh keys of server and github to the ci_cd.yml file
-        Configure githubu branches
-        Configure migrations if needed?
-        Delete all migrations by saving databse file
+        Setup ssh keys of server and github to the ci_cd.yml file✅
+        Configure githubu branches✅
+        Configure migrations if needed?✅
+        Delete all migrations by saving databse file✅
+
+        Daily reports from PerformanceMetricsMiddleware to file
 
     Secondary:
         Logoo✅
@@ -18,9 +20,9 @@ Musokhon:
     Prior:
         Manage(Create, Delete) files (code evaluation)✅
 
-        Configure Compose file
-        Setup Linting Runner inside ci_cd.yml
-        Cook statistics
+        Configure Compose file✅
+        Setup Linting Runner inside ci_cd.yml✅
+        Cook statistics✅
 
     Secondary:
         Logo✅

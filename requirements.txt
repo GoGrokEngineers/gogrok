@@ -25,3 +25,7 @@ typing_extensions==4.12.2
 uritemplate==4.1.1
 celery==5.4.0
 drf-spectacular==0.28.0
+channel==4.2.0
+channels-redis==4.2.1
+
+
