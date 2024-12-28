@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'redis',
     'corsheaders',
     'ckeditor',
+    'channels',
     
     'apps.competition',
     'apps.task',
@@ -65,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #custom middlewares
+    'apps.competition.middleware.PerformanceMetricsMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -89,6 +92,16 @@ CACHES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
+
+ASGI_APPLICATION = 'config.asgi.application'
 
 CKEDITOR_CONFIGS = {
     'default':

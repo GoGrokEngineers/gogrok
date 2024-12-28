@@ -132,7 +132,7 @@ class CompetitionAPIView(View):
             **serializer.validated_data,
             "task_title": task.title,
             "function_name": function_name,
-            "is_started": False,
+            "started": False,
             "created_at": timezone.now(),
             "results": [],
         }
@@ -196,7 +196,6 @@ class JoinCompetitionView(APIView):
         competition_data["participants"][nickname] = {
             "id": participant_id,
             "is_solved": False,
-            "responses": [],
         }
         set_cache_data(comp_uid, competition_data)
 
