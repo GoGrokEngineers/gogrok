@@ -14,7 +14,7 @@ from channels.auth import AuthMiddlewareStack
 from apps.competition.rounting import websocket_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-
+print(websocket_urlpatterns)
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
