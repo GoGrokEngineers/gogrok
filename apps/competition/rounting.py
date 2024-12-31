@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import re_path
 from .consumers import CompetitionRoomConsumer
 
 websocket_urlpatterns = [
-    path('v2/ws/waiting-room/<str:comp_pin>/', CompetitionRoomConsumer.as_asgi()),
+    re_path(r'^v2/ws/waiting-room/(?P<comp_uid>\w+)/$', CompetitionRoomConsumer.as_asgi()),
 ]
