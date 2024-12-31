@@ -165,26 +165,42 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'ERROR',
+            'level': 'ERROR',  # Logs error-level messages to the file
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOG_DIR, 'django_errors.log'),
             'formatter': 'verbose',
         },
         'access_file': {
-            'level': 'INFO',
+            'level': 'INFO',  # Logs info-level messages for access
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOG_DIR, 'django_access.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'access_file'],
-            'level': 'INFO',
+            'handlers': ['file', 'access_file', 'console'],
+            'level': 'INFO',  # Change to DEBUG for more detailed logs
             'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['access_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': False,
         },
     },
 }
+
 
 
 REST_FRAMEWORK = {
