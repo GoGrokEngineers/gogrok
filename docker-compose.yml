@@ -23,7 +23,6 @@ services:
       python manage.py makemigrations &&
       python manage.py migrate &&
       gunicorn --bind 0.0.0.0:8000 config.wsgi:application --log-level debug
-      daphne -b 0.0.0.0 -p 8001 config.asgi:application
       "
     mem_limit: 1g  # Limit memory usage to 1GB
     mem_reservation: 512m  # Reserve 512MB memory for the app
