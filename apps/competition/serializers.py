@@ -11,7 +11,7 @@ class CompetitionValidateSerializer(serializers.Serializer):
     comp_uid = serializers.CharField(read_only=True)
     difficulty = serializers.ChoiceField(choices=DIFFICULTY_CHOICES)
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)
-    capacity = serializers.IntegerField()
+    capacity = serializers.IntegerField()   # Why do we need this field
     participants = serializers.DictField()
     results = serializers.ListField(read_only=True)
 

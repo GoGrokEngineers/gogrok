@@ -76,6 +76,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000', 
+    "http://127.0.0.1:8000",
 ]
 
 
@@ -95,11 +96,9 @@ CACHES = {
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('redis', 6379)],
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
+
 }
 
 
