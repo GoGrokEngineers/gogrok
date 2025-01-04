@@ -9,6 +9,7 @@ services:
     image: gogrok-backend-app  # Explicitly set the image name
     ports:
       - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./logs:/gogrok/logs  # Ensure logs are persisted outside the container
       - .:/gogrok  # Mount the current project directory
