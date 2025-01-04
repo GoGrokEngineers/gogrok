@@ -5,7 +5,7 @@
 🚀: Deploy stuff.
 ✅: Add, update, or pass tests.
 🚨: Fix compiler / linter warnings.
-♻️: Refactor code.
+🔨: Refactor code or edit.
 🎨: Improve structure / format of the code.
 ➕: add a dependency
 

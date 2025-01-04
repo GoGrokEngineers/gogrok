@@ -31,6 +31,7 @@ SECRET_KEY = "django-insecure-07-hd3b$s!82$(w^j3@qu%p#zm(p^0vpi2da_d!1ioi%8u78s&
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+ASGI_APPLICATION = 'config.asgi.application'
 
 
 # Application definition
@@ -70,8 +71,8 @@ MIDDLEWARE = [
     'apps.competition.middleware.PerformanceMetricsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000', 
@@ -100,7 +101,6 @@ CHANNEL_LAYERS = {
 
 }
 
-ASGI_APPLICATION = 'config.asgi.application'
 
 CKEDITOR_CONFIGS = {
     'default':
@@ -164,26 +164,42 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'ERROR',
+            'level': 'ERROR',  # Logs error-level messages to the file
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOG_DIR, 'django_errors.log'),
             'formatter': 'verbose',
         },
         'access_file': {
-            'level': 'INFO',
+            'level': 'INFO',  # Logs info-level messages for access
             'class': 'logging.FileHandler',
             'filename': os.path.join(LOG_DIR, 'django_access.log'),
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'access_file'],
-            'level': 'INFO',
+            'handlers': ['file', 'access_file', 'console'],
+            'level': 'INFO',  # Change to DEBUG for more detailed logs
             'propagate': True,
+        },
+        'django.server': {
+            'handlers': ['access_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': False,
         },
     },
 }
+
 
 
 REST_FRAMEWORK = {
