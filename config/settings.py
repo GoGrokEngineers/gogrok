@@ -70,7 +70,11 @@ MIDDLEWARE = [
     'apps.competition.middleware.PerformanceMetricsMiddleware',
 ]
 
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+ASGI_APPLICATION = 'config.asgi.application'
+
 
 
 CORS_ALLOWED_ORIGINS = [
@@ -101,7 +105,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-ASGI_APPLICATION = 'config.asgi.application'
 
 CKEDITOR_CONFIGS = {
     'default':
