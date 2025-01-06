@@ -12,7 +12,7 @@ class CompetitionValidateSerializer(serializers.Serializer):
     difficulty = serializers.ChoiceField(choices=DIFFICULTY_CHOICES)
     duration = serializers.ChoiceField(choices=DURATION_CHOICES)
     capacity = serializers.IntegerField()   # Why do we need this field
-    participants = serializers.DictField()
+    participants = serializers.DictField(read_only=True)
     results = serializers.ListField(read_only=True)
 
     def create(self, validated_data):

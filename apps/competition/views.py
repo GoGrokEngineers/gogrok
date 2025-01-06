@@ -132,7 +132,8 @@ class CompetitionAPIView(View):
             **serializer.validated_data,
             "task_title": task.title,
             "function_name": function_name,
-            "started": False,
+            "is_started": False,
+            "participants": {},
             "created_at": timezone.now(),
             "results": [],
         }

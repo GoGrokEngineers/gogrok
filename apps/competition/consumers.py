@@ -60,7 +60,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         if not comp_data:
             await self.send_error("Competition does not exist or has expired.")
 
-
+    
         if comp_data["is_started"]:
             await self.send_error('The competition has already started.')
 
@@ -82,6 +82,29 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         # Notify others in the room
         await self.broadcast_event('user_joined', nickname, comp_data)
 
+
+    async def user_joined(self, event):
+        nickname = event.get("nickname")
+        participants = event.get("participants")
+
+        await self.send(text_data=json.dumps({
+            'type': 'user_joined',
+            'nickname': nickname,
+            'participants': participants
+        }))
+
+    
+    async def user_left(self, event):
+        nickname = event.get("nickname")
+        participants = event.get("participants")
+
+        await self.send(text_data=json.dumps({
+            'type': 'user_left',
+            'nickname': nickname,
+            'participants': participants
+        }))
+
+
     async def handle_leave(self, nickname):
         comp_data = await self.get_comp_data()
 
@@ -99,6 +122,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
 
         await self.broadcast_event('user_left', nickname, comp_data)
 
+
     async def handle_start(self, nickname):
         comp_data = await self.get_comp_data()
 
@@ -113,7 +137,60 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         comp_data["participants"][nickname]["start"] = True
         await self.update_comp_data(comp_data)
 
-        await self.update_and_broadcast_participant_status(comp_data)
+        if await self.are_all_participants_ready(comp_data):
+                await self.start_competition(comp_data)
+        else:
+            # Notify that the competition can't start yet
+            await self.send(text_data=json.dumps({
+                'type': 'not_all_ready',
+                'message': 'Not all participants are ready or the competition is not at full capacity.'
+            }))
+
+
+
+    async def are_all_participants_ready(self, comp_data):
+        """
+        Checks if all participants have the 'start' flag set to True and 
+        if the number of participants matches the competition's capacity.
+        Returns True if all are ready, otherwise False.
+        """
+
+
+        if len(comp_data.get("participants", {})) != comp_data.get("capacity", 0):
+            return False
+
+        for participant in comp_data.get("participants", {}).values():
+            if not participant.get("start", False):  # If any participant isn't ready, return False
+                return False
+        return True
+    
+    async def start_competition(self, comp_data):
+        """
+        This method is called when all participants are ready and the capacity is met.
+        It starts the competition and sends a broadcast message to everyone.
+        """
+      
+        comp_data["is_started"] = True
+        await self.update_comp_data(comp_data)
+
+        # Notify all participants that the competition has started
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'competition_started',
+                'message': 'The competition has started!'
+            }
+        )
+        
+        await self.send(text_data=json.dumps({'type': 'competition_started', 'message': 'The competition has started!'}))
+
+    async def competition_started(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'competition_started',
+            'message': event['message']
+        }))
+        
+
 
     async def send_initial_participant_status(self):
         comp_data = await self.get_comp_data()
@@ -157,9 +234,6 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             'ready_to_start': event['ready_to_start'],
             'not_ready_to_start': event['not_ready_to_start']
         }))
-
-    async def start_competition(self, event):
-        await self.send(text_data=json.dumps({'type': 'start_competition'}))
 
     async def validate_comp_uid(self):
         comp_data = cache.get(self.comp_uid)
