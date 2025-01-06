@@ -6,18 +6,18 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: gogrok-backend-app
-    image: gogrok-backend-app  # Explicitly set the image name
+    image: gogrok-backend-app
     ports:
       - "8000:8000"
       - "8001:8001"
     volumes:
-      - ./logs:/gogrok/logs  # Ensure logs are persisted outside the container
-      - .:/gogrok  # Mount the current project directory
-      - ./staticfiles:/gogrok/staticfiles  # Persist static files outside the container
+      - ./logs:/gogrok/logs
+      - .:/gogrok
+      - ./staticfiles:/gogrok/staticfiles
     environment:
-      - REDIS_URL=redis://redis:6379/1  # Docker service name for Redis
+      - REDIS_URL=redis://redis:6379/1
     depends_on:
-      - redis  # Ensure Redis is up before the app starts
+      - redis
     command: >
       sh -c "
       mkdir -p /gogrok/logs &&
@@ -26,18 +26,18 @@ services:
       daphne -b 0.0.0.0 -p 8001 config.asgi:application &
       gunicorn --bind 0.0.0.0:8000 config.wsgi:application --log-level debug
       "
-    mem_limit: 1g  # Limit memory usage to 1GB
-    mem_reservation: 512m  # Reserve 512MB memory for the app
+    mem_limit: 1g
+    mem_reservation: 512m
 
   redis:
     image: redis:latest
     container_name: redis
     ports:
-      - "6379:6379"  # Expose Redis port
+      - "6379:6379"
     volumes:
-      - redis_data:/data  # Persist Redis data
+      - redis_data:/data
 
 volumes:
-  redis_data:  # Volume for Redis data
-  logs:  # Volume for application logs
-  staticfiles:  # Volume for static files
+  redis_data:
+  logs:
+  staticfiles:
