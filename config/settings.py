@@ -71,6 +71,15 @@ MIDDLEWARE = [
     'apps.competition.middleware.PerformanceMetricsMiddleware',
 ]
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("127.0.0.1", 6379)],  # Address of your Redis server
+        },
+    },
+
+}
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -92,13 +101,6 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-}
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-
 }
 
 

@@ -54,9 +54,33 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             await self.send_error('Invalid action or missing action.')
 
     async def handle_join(self, nickname):
-         comp_data = await self.get_comp_data()
+        comp_data = await self.get_comp_data()
 
-         
+
+        if not comp_data:
+            await self.send_error("Competition does not exist or has expired.")
+
+
+        if comp_data["is_started"]:
+            await self.send_error('The competition has already started.')
+
+        if await self.is_participant_limit_reached(comp_data):
+            await self.send_error('The competition is at full capacity.')
+            return
+
+        if await self.is_nickname_taken(comp_data, nickname):  # Check for duplicate nickname
+            await self.send_error('This nickname is already taken.')
+            return
+
+        # Add participant
+        participant_id = len(comp_data["participants"]) + 1
+        comp_data["participants"][nickname] = self.create_participant(participant_id)
+
+        await self.update_comp_data(comp_data)
+        await self.send_initial_participant_status()
+
+        # Notify others in the room
+        await self.broadcast_event('user_joined', nickname, comp_data)
 
     async def handle_leave(self, nickname):
         comp_data = await self.get_comp_data()
