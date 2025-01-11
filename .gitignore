@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 
-latency_metrics.txt
+logs/latency_metrics.txt
 
 # Ignore virtual environment directories
 env/
