@@ -13,7 +13,7 @@ class PerformanceMetricsMiddleware(MiddlewareMixin):
 
     def log_latency_to_file(self, path, duration):
         
-        log_file = "/root/gogrok/latency_metrics.txt"
+        log_file = "latency_metrics.txt"
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         
         with open(log_file, "a") as file:
