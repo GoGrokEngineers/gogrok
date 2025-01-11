@@ -13,7 +13,7 @@ class PerformanceMetricsMiddleware(MiddlewareMixin):
 
     def log_latency_to_file(self, path, duration):
         
-        log_file = "/logs/latency_metrics.txt"
+        log_file = "/app/logs/latency_metrics.txt"
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         
         try:

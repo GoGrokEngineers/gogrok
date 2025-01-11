@@ -4,6 +4,7 @@ __pycache__/
 
 logs/latency_metrics.txt
 
+
 # Ignore virtual environment directories
 env/
 venv/
