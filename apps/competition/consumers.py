@@ -31,10 +31,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
      
 
     def get_competition_data(self):
-        # Fetch data from Redis, DB, or other sources
-        # Example: Redis fetch (assume serialized JSON)
-        comp_data = '{"participants": {"user1": {"start": true}, "user2": {"start": false}}}'
-        return comp_data
+        return cache.get(self.comp_uid)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -121,7 +118,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         await self.send_initial_participant_status()
 
         await self.broadcast_event('user_left', nickname, comp_data)
-
+        await self.close()
 
     async def handle_start(self, nickname):
         comp_data = await self.get_comp_data()
