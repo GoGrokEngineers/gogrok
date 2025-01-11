@@ -16,5 +16,8 @@ class PerformanceMetricsMiddleware(MiddlewareMixin):
         log_file = "latency_metrics.txt"
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         
-        with open(log_file, "a") as file:
-            file.write(f"{timestamp} - {path} - {duration:.2f}s\n")
+        try:
+            with open(log_file, "a") as file:
+                file.write(f"{timestamp} - {path} - {duration:.2f}s\n")
+        except Exception as e:
+            print(f"Error writing to file: {e}")
