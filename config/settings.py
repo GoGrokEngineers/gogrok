@@ -75,12 +75,11 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [("127.0.0.1", 6379)],  # Address of your Redis server
+            "hosts": [os.environ.get("REDIS_URL", "redis://redis:6379/1")],  # Address of your Redis server
         },
     },
 
 }
-
 
 CORS_ALLOW_ALL_ORIGINS = True
 
