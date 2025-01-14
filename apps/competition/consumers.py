@@ -142,6 +142,77 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
                 'type': 'not_all_ready',
                 'message': 'Not all participants are ready or the competition is not at full capacity.'
             }))
+        
+
+        async def handle_submission_evaluation(self, comp_uid, nickname, solution):
+            """
+            Processes:
+            -----------------
+            1. Input Validation:
+            - Validate the incoming data for required fields: `comp_uid`, `nickname`, and `code`.
+            - If validation fails, send an error message to the client and terminate the process.
+
+            2. Competition Data Retrieval:
+            - Fetch the competition data associated with the provided `comp_uid`.
+            - If competition data is missing or invalid, notify the client with an error and stop processing.
+
+            3. Participant Validation:
+            - Check if the `nickname` exists in the competition's list of participants.
+            - If not found, notify the client that the participant is not registered in this competition.
+
+            4. Task Retrieval:
+            - Retrieve the associated task using the task title from the competition data.
+
+            5. Code Evaluation:
+            - Evaluate the submitted code by running it against all predefined test cases for the task.
+            - This includes:
+                a. Executing the code in a controlled environment to prevent security risks.
+                b. Collecting results for each test case (pass/fail status, execution time, and error messages).
+
+            6. Result Analysis:
+            - Determine whether all test cases passed:
+                a. If All Passed:
+                    - Mark the participant as having solved the task.
+                    - Record the time of solution and the time taken since the competition started.
+                    - Append the participant's result with a "Solved" status to the competition's results.
+                    - Prepare a success message for the client.
+                b. If Not All Passed:
+                    - Append the participant's result with a "Failed" status to the competition's results.
+                    - Prepare a message indicating test cases failed.
+
+            7. Competition Data Update:
+            - Update the competition data in the cache to reflect the new submission results.
+
+            8. Send Feedback to Client:
+            - Send a real-time response to the WebSocket client containing:
+                a. Submission status (success/failure).
+                b. Detailed results of the test cases.
+                c. An appropriate success or failure message.
+
+            9. Error Handling:
+            - Gracefully handle exceptions during processing (invalid data, task retrieval failures).
+            - Log errors for debugging and notify the client with a descriptive error message.
+
+            Notes:
+            ------
+            - Ensure the evaluation environment is secure and isolated to avoid malicious code execution.
+            - Maintain consistent data structure for responses to simplify client-side handling.
+            - Use asynchronous operations to handle multiple submissions concurrently and efficiently.
+
+            Example Response:
+            -----------------
+            {
+                "type": "submission_result",
+                "success": True,
+                "message": "All test cases passed! Task solved successfully.",
+                "results": [
+                    {"test_case": 1, "result": "pass"},
+                    {"test_case": 2, "result": "pass"},
+                    ...
+                ]
+            }
+            """
+
 
 
 
