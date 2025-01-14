@@ -8,6 +8,7 @@
 🔨: Refactor code or edit.
 🎨: Improve structure / format of the code.
 ➕: add a dependency
+📝: Docs
 
 <type>(<scope>): <short description>
 
