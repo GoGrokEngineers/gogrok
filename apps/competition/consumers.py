@@ -2,7 +2,9 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
 from django.utils.text import slugify
-
+from django.utils import timezone
+from asgiref.sync import sync_to_async
+from apps.competition.utils.evaluate_code import evaluate_code
 
 class CompetitionRoomConsumer(AsyncWebsocketConsumer):
     
@@ -148,23 +150,70 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         
 
     async def handle_submission_evaluation(self, nickname, submission=""):
+        from apps.task.models import Task
         if not nickname:
             await self.send_error("Missing required field: nickname")
             return
         
-
+        # Fetching
         comp_data = await self.get_comp_data()
+        print(comp_data)
         if not comp_data:
             await self.send_error("Competition does not exist or has expired.")
             return
+        
         
         if nickname not in comp_data.get("participants", {}):
             await self.send_error("Participant not found in this competition.")
             return
         
+        task_title = comp_data.get("task_title")
+        try:
+            task = await sync_to_async(Task.objects.get)(title=task_title)
+        except Task.DoesNotExist:
+            await self.send_error("Task not found.")
+            return
 
+        results = await sync_to_async(evaluate_code)(
+            code=submission, task=task, competition_uid=self.comp_uid, nick_name=nickname
+        )
 
-        
+        participant_data = comp_data.get("participants")[nickname]
+        all_passed = all(result["result"] == "pass" for result in results)
+
+        if all_passed:
+            participant_data.update(
+                {
+                    "is_solved": True,
+                    "solved_at": timezone.now(),
+                    "time_took": (timezone.now() - comp_data["created_at"]).total_seconds(),
+                }
+            )
+            comp_data["results"].append(
+                {
+                    "nickname": nickname,
+                    "status": "Solved",
+                    "results": results,
+                }
+            )
+            message = "All test cases passed! Task solved successfully."
+        else:
+            comp_data["results"].append(
+                {"nickname": nickname, "status": "Failed", "results": results}
+            )
+            message = "Code submitted, but not all test cases passed."
+
+        # 7. Save Updated Data
+        await sync_to_async(cache.set)(self.comp_uid, comp_data)
+
+        # 8. Send Response to Client
+        print(comp_data)
+        await self.send(text_data=json.dumps({
+            "type": "submission_result",
+            "success": True,
+            "message": message,
+            "results": results,
+        }))
         """
         Processes:
         -----------------
