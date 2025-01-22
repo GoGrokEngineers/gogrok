@@ -31,9 +31,9 @@ def evaluate_code(code : str, task, competition_uid, nick_name):
     folder = f"submissions/{competition_uid}"
     try:
         os.mkdir(folder)
-    except:
+    except Exception as ex:
         pass
-    
+
     results = []
 
 
