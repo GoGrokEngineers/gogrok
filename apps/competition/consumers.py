@@ -120,8 +120,8 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             return
 
         del comp_data["participants"][nickname]
-        if len(comp_data["participants"]) == 0:
-            path = os.path.join("submissions", str(self.comp_uid))
+        path = os.path.join("submissions", str(self.comp_uid))
+        if len(comp_data["participants"]) == 0 and os.path.exists(path):
             os.rmdir(path)
 
         await self.update_comp_data(comp_data)
