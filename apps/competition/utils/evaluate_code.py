@@ -31,7 +31,7 @@ def evaluate_code(code : str, task, competition_uid, nick_name):
     folder = "submissions"
     results = []
 
-    file_name = os.path.join(folder, str(competition_uid), f"submission_{nick_name}_{competition_uid}.py")
+    file_name = os.path.join(folder, f"submission_{nick_name}_{competition_uid}.py")
     wrapper_code = f"""
 if __name__ == "__main__":
     import sys, json
@@ -142,7 +142,6 @@ if __name__ == "__main__":
 
     finally:
         all_passed = all(result['result'] == 'pass' for result in results)
-        if all_passed:
-            delete_file(file_name)
+        delete_file(file_name)
 
     return results
