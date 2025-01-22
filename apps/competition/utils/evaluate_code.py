@@ -29,7 +29,11 @@ def evaluate_code(code : str, task, competition_uid, nick_name):
     function_name = generate_function_name(task)
     print(function_name)
     folder = f"submissions/{competition_uid}"
-    os.mkdir(folder)
+    try:
+        os.mkdir(folder)
+    except:
+        pass
+    
     results = []
 
 
