@@ -50,7 +50,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
 
         if action and hasattr(self, f"handle_{action}"):
             handler_method = getattr(self, f"handle_{action}")
-            if submission:
+            if submission and action != "leave":
                 await handler_method(nickname, submission)
             else:
                 await handler_method(nickname)
