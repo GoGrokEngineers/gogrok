@@ -144,7 +144,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             }))
         
 
-        async def handle_submission_evaluation(self, comp_uid, nickname, solution):
+    async def handle_submission_evaluation(self, comp_uid, nickname, solution=""):
             """
             Processes:
             -----------------
