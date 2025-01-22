@@ -28,14 +28,10 @@ def build_tree(data):
 def evaluate_code(code : str, task, competition_uid, nick_name):
     function_name = generate_function_name(task)
     print(function_name)
-    folder = f"submissions/{competition_uid}"
-
-    if not os.path.exists(folder):
-        os.mkdir(folder)
-
+    folder = "submissions"
     results = []
 
-    file_name = os.path.join(folder, f"submission_{nick_name}_{competition_uid}.py")
+    file_name = os.path.join(folder, str(competition_uid), f"submission_{nick_name}_{competition_uid}.py")
     wrapper_code = f"""
 if __name__ == "__main__":
     import sys, json

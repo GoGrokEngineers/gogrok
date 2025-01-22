@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views import View
 import json 
+import os
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -264,6 +265,10 @@ class SubmitCodeView(APIView):
             message = "Code submitted, but not all test cases passed."
 
         set_cache_data(comp_uid, competition_data)
+        path = os.path.join("submissions", str(comp_uid))
+        os.mkdir(path)
+        
+
         return Response(
             {"success": True, "message": message, "results": results},
             status=status.HTTP_200_OK,
