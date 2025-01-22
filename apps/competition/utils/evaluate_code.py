@@ -29,11 +29,8 @@ def evaluate_code(code : str, task, competition_uid, nick_name):
     function_name = generate_function_name(task)
     print(function_name)
     folder = f"submissions/{competition_uid}"
-    try:
+    if not os.path.exists(folder):
         os.mkdir(folder)
-    except Exception as ex:
-        pass
-
     results = []
 
 
