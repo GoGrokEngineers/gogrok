@@ -28,7 +28,6 @@ def build_tree(data):
 
 def evaluate_code(code : str, task, competition_uid, nick_name):
     function_name = generate_function_name(task)
-    print(function_name)
     folder = "submissions"
     results = []
 
@@ -95,7 +94,6 @@ if __name__ == "__main__":
         for i, test_case in enumerate(test_cases):
             # Convert the input data to JSON
             input_data = json.dumps(test_case.input)
-            print(input_data)
            
             try:
                 result = subprocess.run(
@@ -105,7 +103,6 @@ if __name__ == "__main__":
                     capture_output=True,
                     timeout=5  
                 )
-                print(result)
                 
                 
                 if result.returncode == 0:
