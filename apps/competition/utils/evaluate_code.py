@@ -2,6 +2,7 @@ import subprocess
 import os
 import json
 from .generate_function_name import generate_function_name
+from django.conf import settings
 
 is_root = False
 def delete_file(file_path):
@@ -31,7 +32,7 @@ def evaluate_code(code : str, task, competition_uid, nick_name):
     folder = "submissions"
     results = []
 
-    file_name = os.path.join(folder, f"submission_{nick_name}_{competition_uid}.py")
+    file_name = os.path.join(settings.BASE_DIR, folder, f"submission_{nick_name}_{competition_uid}.py")
     wrapper_code = f"""
 if __name__ == "__main__":
     import sys, json
