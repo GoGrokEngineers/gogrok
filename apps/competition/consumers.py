@@ -160,7 +160,6 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         
         # Fetching
         comp_data = await self.get_comp_data()
-        print(comp_data)
         if not comp_data:
             await self.send_error("Competition does not exist or has expired.")
             return
@@ -210,7 +209,6 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         await sync_to_async(cache.set)(self.comp_uid, comp_data)
 
         # 8. Send Response to Client
-        print(comp_data)
         await self.send(text_data=json.dumps({
             "type": "submission_result",
             "success": True,
@@ -427,7 +425,6 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
                 try:
                     data = json.loads(data)
                 except json.JSONDecodeError as e:
-                    print(f"Error decoding JSON for participant {nickname}: {data}")
                     continue  # Skip this participant if deserialization fails
 
             # Ensure participant data is a dictionary and check "start" status
