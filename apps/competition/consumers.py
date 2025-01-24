@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from asgiref.sync import sync_to_async
 from apps.competition.utils.evaluate_code import evaluate_code
+import time
 import os
 
 class CompetitionRoomConsumer(AsyncWebsocketConsumer):
@@ -120,11 +121,13 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             return
 
         del comp_data["participants"][nickname]
+
         await self.update_comp_data(comp_data)
         await self.send_initial_participant_status()
-
         await self.broadcast_event('user_left', nickname, comp_data)
+        time.sleep(2.0)
         await self.close()
+
 
     async def handle_start(self, nickname):
         comp_data = await self.get_comp_data()
@@ -151,7 +154,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         
     async def handle_submission_evaluation(self, nickname, submission=""):
         from apps.task.models import Task
-        if not nickname:
+        if not nickname:    
             await self.send_error("Missing required field: nickname")
             return
         
