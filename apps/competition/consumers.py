@@ -107,6 +107,17 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
             'nickname': nickname,
             'participants': participants
         }))
+    
+
+    async def user_ready(self, event):
+        nickname = event.get("nickname")
+        participants = event.get("participants")
+
+        await self.send(text_data=json.dumps({
+            'type': 'user_ready',
+            'nickname': f"{nickname} is ready",
+            'ready_to_start': participants 
+        }))
 
 
     async def handle_leave(self, nickname):
@@ -147,11 +158,10 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
                 await self.start_competition(comp_data)
         else:
             # Notify that the competition can't start yet
-            await self.send(text_data=json.dumps({
-                'type': 'not_all_ready',
-                'message': 'Not all participants are ready or the competition is not at full capacity.'
-            }))
+            await self.broadcast_event('user_ready', nickname, comp_data)
+
         
+
     async def handle_submission_evaluation(self, nickname, submission=""):
         from apps.task.models import Task
         if not nickname:    
