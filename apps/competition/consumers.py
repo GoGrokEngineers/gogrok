@@ -8,6 +8,7 @@ from apps.competition.utils.evaluate_code import evaluate_code
 import time
 import os
 
+#hi
 class CompetitionRoomConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
