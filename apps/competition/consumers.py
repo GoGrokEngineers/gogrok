@@ -15,6 +15,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         self.comp_uid = self.scope['url_route']['kwargs']['comp_uid']
         self.room_group_name = f'waiting_room_{self.comp_uid}'
 
+
         if not await self.validate_comp_uid():
             await self.close()
             return
@@ -48,11 +49,13 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         action = data.get('action')
         nickname = data.get('nickname', '')
-        submission = data.get('submission', '')
-
+        print("Received action:", action, "for nickname:", nickname)
         if action and hasattr(self, f"handle_{action}"):
             handler_method = getattr(self, f"handle_{action}")
-            if submission and action != "leave":
+            
+            if action == "submission_evaluation":
+                submission = data.get('submission', '')
+                print("Submission:", submission)
                 await handler_method(nickname, submission)
             else:
                 await handler_method(nickname)
@@ -384,7 +387,7 @@ class CompetitionRoomConsumer(AsyncWebsocketConsumer):
 
     async def validate_comp_uid(self):
         comp_data = cache.get(self.comp_uid)
-        return bool(comp_data and not comp_data.get("is_started"))
+        return bool(comp_data)
 
     async def get_comp_data(self):
         return cache.get(self.comp_uid)

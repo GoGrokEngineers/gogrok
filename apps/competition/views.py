@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from celery import shared_task
 from datetime import date
+from asgiref.sync import sync_to_async
 
 from apps.competition.utils.random_task import get_random
 from apps.competition.utils.generators import generator_uid
@@ -26,7 +27,15 @@ from .serializers import (
 )
 from apps.task.models import Task
 
+def get_task_by_name_sync():
+    """
+    Synchronous function to get a Task by its name.
+    This assumes that the task exists.
+    """
+    return Task.objects.get(title="Last Stone Weight")
 
+# Wrap the synchronous function with sync_to_async
+get_task_by_name = sync_to_async(get_task_by_name_sync)
 # Declare default data about today's comeptitions
 @shared_task() 
 def create_daily_statistics():
@@ -106,13 +115,14 @@ class CompetitionAPIView(View):
                 {"success": False, "errors": serializer.errors},
                 status=400,
             )
-
-        difficulty = serializer.validated_data.get("difficulty")
-
-        random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
+        
+           
+        # difficulty = serializer.validated_data.get("difficulty")
+        task_coro = get_task_by_name()
+        # random_task_coro = asyncio.to_thread(get_random, difficulty=difficulty)
         uid_generation_coro = asyncio.to_thread(generator_uid)
 
-        task, comp_uid = await asyncio.gather(random_task_coro, uid_generation_coro)
+        task, comp_uid = await asyncio.gather(task_coro, uid_generation_coro)
 
         if not task:
             return JsonResponse(

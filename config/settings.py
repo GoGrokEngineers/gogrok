@@ -71,22 +71,22 @@ MIDDLEWARE = [
     'apps.competition.middleware.PerformanceMetricsMiddleware',
 ]
 
-CHANNEL_LAYERS = {
-
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get("REDIS_URL", "redis://redis:6379/1")],
-        },
-    },
-}
-
 # CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels.layers.InMemoryChannelLayer',
-#     },
 
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [os.environ.get("REDIS_URL", "redis://redis:6379/1")],
+#         },
+#     },
 # }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+
+}
 
 CORS_ALLOW_ALL_ORIGINS = True
 

@@ -119,6 +119,7 @@ if __name__ == "__main__":
                         results.append({
                             "test_case": i + 1,
                             "result": "fail",
+                            "input" : input_data,
                             "output": actual_output,
                             "expected": expected_output
                         })
